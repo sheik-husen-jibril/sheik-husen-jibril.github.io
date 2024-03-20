@@ -1,0 +1,246 @@
+body{
+  background: #1B1A1F;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+/*
+display:block; --- starts on a new line, takes up the whole width, adds a line-break after the element
+display:inline; --- It's the default. Height & width have no effect.
+display:inline-block; --- Similar to "inline" element, but you can apply height and width.
+*/
+
+.navbig{
+  border: solid 0px blue;
+  display: block;
+  width: 100%;
+  text-align: right;
+   background-color:#111111 ;/* #D85510; */
+   padding: 8px 0 8px 0;
+   float: left;
+}
+.navbig li{
+  float: left;
+  padding: 8px 14px 4px 14px;
+  margin: 0;
+}
+.navbig ul{
+    list-style-type: none;
+      display: inline-block;
+  padding: 0 16px 0 0;margin: 0;
+}
+.navbig a{
+  text-decoration: none;
+  color: #D85510;/*  black;  */
+  font-weight: normal;
+  font-size: 1.0rem;
+  padding: 0;
+  margin: 0;
+}
+.navbig a:hover{
+  color: #7E1811;
+}
+.navbig h1{
+  margin: 0 0 0 16px;
+    float: left;
+  color: #D85510;
+  font-weight: bold;
+}
+/*
+ */
+.wrapper1{
+  background: #141414 none repeat scroll 0% 0%;
+  border-radius: 12px;
+  border: 1px solid  #343435;
+  display: inline-block;
+  width: 55%;
+  margin-top: 24px;
+  margin-left: 16px;
+  padding: 0px;
+  padding-bottom: 24px;
+  float: left;
+}
+.imagebanner{
+  border-radius: 12px 12px 0px 0px;
+  margin: 0px; padding: 0px;
+  width: 100%;
+  float: left;
+  margin-bottom: 20px;
+}
+.content1{
+  margin: 18px;
+  width: 480px;
+  float: left;
+}
+.content1 h1{
+  display: block;
+  text-align: left;color: #D85510;
+  font-size: 18px;
+  float: left;
+  font-weight: bold;
+  margin: 10px 16px;
+}
+.content1 pre{
+  display: block;
+  width: 94%;
+  color: #FB8810;
+  font-size: 1.1rem;
+  float: left;  margin:12px 6px 12px 6px;
+}
+.arabic1{
+  display: block;
+  width: 64%;
+  border: solid 2px #004569;
+/*  margin-left: 15px;     */
+  margin: 12px 28px;
+  text-align: center;
+  color:#00A4FA;
+  font-size: 1.7rem;
+  float: left;
+  -moz-box-sizing: border-box;
+  overflow: hidden;
+}
+.highlight1{
+  display:inline-block;
+  color:#FB8810;
+  font-size:1.0rem;
+  width:60%;
+  border:solid 1px #FB8810;
+  border-radius: 7px;
+  padding:12px 10px;
+  margin-top: 16px;
+}
+/*
+  Side1 Navigation Links
+*/
+.side1{
+/*  width: 360px;     */
+display: inline-block;
+  width: 360px;
+  border: solid 2px #E04216;   /* #D85510;   */
+  border-radius: 12px;
+  margin: 28px 10px 38px 16px;
+    padding: 20px 10px;
+    color: #D85510;
+    float: left;
+}
+.side1 ul{
+    list-style-type: none;
+    display: block;
+  margin: 0;
+  padding: 0;
+}
+.side1 li{
+  border-bottom: solid 2px #E04216;  /*  #D85510;  #2B2930;  */
+  margin: 8px 5px;
+  padding: 10px 3px;
+}
+.side1 a{
+  text-decoration: none;
+  color: #E04216;/*  #00A4FA;  */
+  font-size:0.9rem; /*  14px;  */
+  font-weight: normal;
+}
+.side1 a:hover{
+  color: #FF2700;
+}
+/*
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+*/
+.quotes-container{
+  width: 98%;
+  padding: 6px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* flex-start space-around space-between */
+  align-items: flex-start;
+  align-content: space-between;
+}
+.quotes1{
+  display: inline;
+/*  color: #0083A3;   */
+color: #D85510;
+
+  padding: 0px;
+  margin: 0px;
+  /*border: solid 1px white;*/
+  float: left;
+}
+.prequotes1{
+  display: inline-block;
+  text-align: left;
+  /*  border: solid 2px #085f8c;  */
+  border: solid 2px #D85510;
+  border-radius: 12px;
+/*color: #0083A3;   */
+  color: #D85510;
+}
+.content1 .prequotes1{
+  width: auto;
+  /*color: #0083A3;   */
+    color: #D85510;
+    font-size: 1.1rem;
+    padding: 12px 14px 12px 14px;
+      margin: 12px 10px;
+      -moz-box-sizing: border-box;
+      overflow: hidden;
+      float: left;
+}
+/*
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+*/
+
+@media only screen and (max-width: 1024px) {
+  .side1{
+    display: inline-block;
+    float: left;
+    width: 88%;
+  /*  margin: 24px 16px 38px 18px;  */
+    margin-left: 5%;
+    margin-top: 30px;
+    margin-bottom: 38px;
+  }
+  .wrapper1{
+    display: inline-block;
+    width: 94%;
+    margin-left: 3%;
+    min-width: 480px;
+  }
+  .content1{
+    display: inline-block;
+    width: 94%;
+  }
+
+  .content1 h1{
+    font-size: 2rem;
+  }
+  .content1 pre{
+    font-size: 1.3rem;
+  }
+  .side1 a{
+    font-size: 1.0rem;
+  }
+  .arabic1{
+    display: block;
+    width: 60%;
+    padding: 3px 32px;
+      border: solid 2px #00A4FA;
+    margin: 12px 32px 12px 32x;
+    -moz-box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .Tubelink a:hover{
+    color: #FF0000;
+  }
+
+
+
+
+
+
+}
