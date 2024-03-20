@@ -41,6 +41,13 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
 .navbig a:hover{
   color: #7E1811;
 }
+.navbig h2{
+  margin: 0 0 0 16px;
+    float: left;
+  color: #D85510;
+  font-weight: bold;
+  font-size: 34px;
+}
 .navbig h1{
   margin: 0 0 0 16px;
     float: left;
