@@ -203,7 +203,7 @@ color: #D85510;
 
 @media only screen and (max-width: 1024px) {
   .side1{
-    display: inline-block;
+    display: block;
     float: left;
     width: 94%;
   /*  margin: 24px 16px 38px 18px;  */
@@ -217,7 +217,7 @@ color: #D85510;
 
 }
   .wrapper1{
-    display: inline-block;
+    display: block;
     width: 94%;
     margin-left: 3%;
     min-width: 480px;
