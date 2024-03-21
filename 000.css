@@ -208,9 +208,14 @@ color: #D85510;
     width: 94%;
   /*  margin: 24px 16px 38px 18px;  */
     margin-left: 3%;
+    margin-right:3%;
     margin-top: 24px;
-    margin-bottom: 38px;
+    margin-bottom: 38px; 
+    padding:20px 5px;
   }
+.side1 li{
+
+}
   .wrapper1{
     display: inline-block;
     width: 94%;
