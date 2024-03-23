@@ -122,10 +122,11 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   Side1 Navigation Links
 */
 .side1{
+  background-color: #141414;
 /*  width: 360px;     */
 display: inline-block;
   width: 360px;
-  border: solid 2px #E04216;   /* #D85510;   */
+  border: solid 0px #E04216;   /* #D85510;   */
   border-radius: 12px;
   margin: 28px 10px 38px 16px;
     padding: 20px 10px;
