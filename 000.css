@@ -78,6 +78,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
 .content1{
   margin: 18px;
   width: 480px;
+  width: 90%;
   float: left;
 }
 .content1 h1{
