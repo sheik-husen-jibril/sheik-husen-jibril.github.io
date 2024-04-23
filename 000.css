@@ -1,4 +1,18 @@
+@font-face {
+    font-family: 'AbyssinicaSIL'; /* Name of the font */
+    src: url('fonts/AbyssinicaSIL-Regular.ttf') format('truetype'); /* Path to the font file */
+    /* You can also specify other font properties like font-weight and font-style here */
+}
+@font-face {
+    font-family: 'EthiopicLessan'; /* Name of the font */
+    src: url('fonts/EthiopicLessan-Regular.ttf') format('truetype'); /* Path to the font file */
+    /* You can also specify other font properties like font-weight and font-style here */
+}
+
 body{
+   font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
+   /*
+   */
   background: #1B1A1F;
   padding: 0;
   margin: 0;
@@ -31,6 +45,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   padding: 0 16px 0 0;margin: 0;
 }
 .navbig a{
+  font-family: 'Helvetica', TimesNewRoman, 'Arial', Georgia, sans-serif;
   text-decoration: none;
   color: #D85510;/*  black;  */
   font-weight: normal;
@@ -42,6 +57,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   color: #7E1811;
 }
 .navbig h2{
+  font-family: 'Helvetica', TimesNewRoman, 'Arial', Georgia, sans-serif;
   margin: 0 0 0 16px;
     float: left;
   color: #D85510;
@@ -82,6 +98,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   float: left;
 }
 .content1 h1{
+  font-family: 'Helvetica', TimesNewRoman, 'Arial', Georgia, sans-serif;
   display: block;
   text-align: left;color: #D85510;
   font-size: 18px;
@@ -90,6 +107,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   margin: 10px 16px;
 }
 .content1 pre{
+  font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
   display: block;
   width: 94%;
   color: #FB8810;
@@ -123,6 +141,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   Side1 Navigation Links
 */
 .side1{
+  font-family: 'Helvetica', TimesNewRoman, 'Arial', Georgia, sans-serif;
   background-color: #141414;
 /*  width: 360px;     */
 display: inline-block;
@@ -191,7 +210,9 @@ color: #D85510;
   width: auto;
   /*color: #0083A3;   */
     color: #D85510;
-    font-size: 1.1rem;
+    
+    font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
+    font-size: 1.05rem;
     padding: 12px 14px 12px 14px;
       margin: 12px 10px;
       -moz-box-sizing: border-box;
