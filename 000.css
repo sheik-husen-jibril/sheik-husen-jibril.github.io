@@ -99,8 +99,9 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
 }
 .content1 h1{
   font-family: 'Helvetica', TimesNewRoman, 'Arial', Georgia, sans-serif;
-  display: block;
-  text-align: left;color: #D85510;
+  width: 100%;
+/*  border: solid 1px yellow;   */
+  color: #D85510;
   font-size: 18px;
   float: left;
   font-weight: bold;
@@ -210,7 +211,7 @@ color: #D85510;
   width: auto;
   /*color: #0083A3;   */
     color: #D85510;
-    
+
     font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
     font-size: 1.05rem;
     padding: 12px 14px 12px 14px;
