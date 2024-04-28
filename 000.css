@@ -127,6 +127,7 @@ display:inline-block; --- Similar to "inline" element, but you can apply height 
   float: left;
   -moz-box-sizing: border-box;
   overflow: hidden;
+  padding: 8px 32px;
 }
 .highlight1{
   display:inline-block;
