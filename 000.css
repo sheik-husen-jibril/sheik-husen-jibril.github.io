@@ -172,9 +172,16 @@ display: inline-block;
   font-size:0.9rem; /*  14px;  */
   font-weight: normal;
 }
+#side1adv{
+  color: #FBC920;
+}
+#side1adv:hover{
+  color: #FF2700;
+}
 .side1 a:hover{
   color: #FF2700;
 }
+
 /*
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
