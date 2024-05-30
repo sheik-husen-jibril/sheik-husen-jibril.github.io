@@ -46,6 +46,8 @@ float: left;
 border-radius: 4px;
 background-color:#D85510;
 font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial';
+font-weight: bold;
+
 
 }
 .sellBtnDiv a:hover{
