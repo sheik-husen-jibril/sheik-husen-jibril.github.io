@@ -229,11 +229,40 @@ color: #D85510;
       float: left;
 }
 /*
+==========================================
+*/
+#contentsBtn{
+  display: none;
+  float: left;
+  margin: 8px 18px;
+  padding: 16px 20px;
+  background: #D85510;
+  color: black;
+  border-radius: 4px;
+}
+#contentsBtn:hover{
+  background-color:#FD8810;
+}
+#contentsBtn a{
+  color: black;
+  text-decoration: none;
+  font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial';
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+#contentsBtn a:hover{
+  color: red;
+}
+/*
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 */
 
 @media only screen and (max-width: 1024px) {
+  #contentsBtn{
+    display: inline-block;
+  }
+  /*   */
   .side1{
     display: block;
     float: left;
