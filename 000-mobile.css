@@ -13,6 +13,9 @@
 ///////////////////////////////////////////////////////////
 */
 @media only screen and (max-width: 1024px) {
+  .navbig a{
+    font-size: 1.5rem;
+  }
   #contentsBtn{
     display: inline-block;
   }
@@ -20,6 +23,7 @@
   .side1{
     display: block;
     float: left;
+    clear: both;
     width: 92%;
   /*  margin: 24px 16px 38px 18px;  */
     margin-left: 3%;
@@ -43,18 +47,22 @@
   }
 
   .content1 h1{
-    font-size: 2rem;
+    font-size: 1.92rem;
   }
   .content1 pre{
-    font-size: 1.3rem;
+    font-size: 1.88rem;
+    float: left;
+    clear: both;
   }
   .side1 a{
     font-size: 1.0rem;
   }
   .arabic1{
     display: block;
-    width: 60%;
-    padding: 3px 32px;
+    width: 84%;
+    float: left;
+    clear: both;
+    padding: 8px 32px;
       border: solid 2px #00A4FA;
     margin: 12px 32px 12px 32x;
     -moz-box-sizing: border-box;
@@ -68,16 +76,15 @@
   000000000000000000000000000000000000000000000
   */
 .all-intro{
-  font-weight: bold;
-  font-size: 1.4rem;
+/*  font-weight: bold;   */
+  font-size: 1.52rem;
 }
-.quotes-container .quotes1 pre{
+.content1 .quotes-container .quotes1 pre{
     width: auto;
     /*color: #0083A3;   */
       color: #D85510;
       font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
-      font-size: 1.92rem;
-      font-weight: normal;
+      font-size: 1.62rem;
       padding: 12px 14px 12px 14px;
         margin: 12px 10px;
         -moz-box-sizing: border-box;
