@@ -267,7 +267,7 @@ Footer Css
     float: left;
 
     background-color: #222;
-    color: #fff;
+    color: #bbb;
     text-align: center;
     padding: 6px 0;
 /*    position: fixed;bottom: 0;   */
@@ -277,8 +277,13 @@ margin-top: 20px;
     font-size: 14px;
 }
 .myfoot a{
-  color: #fff;
+  color: #bbb;
   font-size: 14px;
+  text-decoration: none;
+}
+.myfoot a:hover{
+  text-decoration: underline;
+  color: yellow;
 }
 
 .myfoot p {
