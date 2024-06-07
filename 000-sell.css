@@ -85,6 +85,12 @@ font-weight: bold;
 .
 .
 */
+.sellTableIncluderDiv{
+  display: inline-block;
+  width: 95%;
+  float: left;
+  clear: both;
+}
 .sellPageTable{
   float: left;
   clear: both;
