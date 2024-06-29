@@ -191,6 +191,16 @@ display: inline-block;
 .all-intro{
   font-size:1.05rem;
 }
+/*     */
+.quotes1-title{
+  padding: 5px 16px;
+  font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
+  font-size: 1.05rem;
+  margin: 0;
+  border-bottom: solid 2px #D85510;
+
+}
+/*     */
 .quotes-container{
   width: 98%;
   padding: 6px;
@@ -203,20 +213,19 @@ display: inline-block;
 }
 .quotes1{
   display: inline;
-/*  color: #0083A3;   */
 color: #D85510;
-
   padding: 0px;
-  margin: 0px;
+  margin: 10px 10px;
   /*border: solid 1px white;*/
   float: left;
+  border: solid 2px #D85510;
+  border-radius: 12px;
 }
 .prequotes1{
   display: inline-block;
   text-align: left;
   /*  border: solid 2px #085f8c;  */
-  border: solid 2px #D85510;
-  border-radius: 12px;
+
 /*color: #0083A3;   */
   color: #D85510;
 }
@@ -228,7 +237,7 @@ color: #D85510;
     font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;
     font-size: 1.05rem;
     padding: 12px 14px 12px 14px;
-      margin: 12px 10px;
+      margin: 3px 2px;
       -moz-box-sizing: border-box;
       overflow: hidden;
       float: left;
