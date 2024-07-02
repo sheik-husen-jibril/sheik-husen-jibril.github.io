@@ -14,8 +14,8 @@ float: left;
   /* background-color:#722210;  */
 }
 .sellBtnDiv img{
-  width: 24px;
-  height: 22px;
+  width: 22px;
+  height: 20px;
 /*  width: 24px;
   height: 20px; */
 /*  background: #D85510;   */
@@ -29,20 +29,22 @@ float: right;
 margin-right: 16px;
 }
 .sellBtnDiv .imgLink01{
-  background: #D85510;
+/*  background: #D85510;   */
+
   float: right;
   text-align: center;
   margin: 0;
   padding: 10px;
   border-radius: 4px;
-  width: 72px;
-  height: 24px;
+  width: 172px;
+  height: 20px;
   margin-top: 6px;
   margin-right: 24px;
   /* */
   font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial';
   font-weight: bold;
-  width: 180px;
+
+/*  width: 180px;  */
   float: left;
   margin-left: 18px;
   text-align: left;
@@ -59,12 +61,16 @@ margin-right: 16px;
   text-decoration:none;
   /*
 */
-border: solid 1px #D85510;
-padding: 14px 28px;
+/*   border: solid 1px #D85510;
+   background-color:#D85510;   */
+background-color: #333;
+border: solid 1px gray;
+
+/*   */
+padding: 12px 24px;
 margin:6px 18px;
 float: left;
 border-radius: 4px;
-background-color:#D85510;
 font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial';
 font-weight: bold;
 
@@ -72,8 +78,8 @@ font-weight: bold;
 }
 .sellBtnDiv a:hover{
   color: black;
-  background-color:#FD8810;
-  text-decoration: underline;
+  /*   background-color:#FD8810;   */
+  background-color: #444;
 }
 
 
@@ -97,9 +103,12 @@ font-weight: bold;
   float: left;
   clear: both;
   /* */
-  font-size:1.05rem;
-  color:#D85510;
-  border:solid 2px gray;   /*   #D85510;   */
+  font-size:1.28rem;
+/*  color:#D85510;   */
+   color: #aaa;
+   font-weight: normal;
+
+  border:solid 2px #555;   /*   #D85510;   */
   border-radius:7px;
   padding: 9px 16px;
   margin: 10px 32px;
@@ -108,23 +117,29 @@ font-weight: bold;
   padding: 0;margin: 0;
 }
 .sellPageHeadTr p{
-  color: gray;
-  margin: 10px 0px;
+  font-size:1.28rem;
+/*  color:#D85510;   */
+   color: #aaa;
+   font-weight: normal;
+  margin: 7px 0px;
 }
 .sellLableTdP{
+  font-size: 1.05rem;
   margin: 0;padding: 0;
   margin-right: 22px;
   margin-top: 2px;
   margin-bottom: 2px;
-  font-weight: lighter;
-  color: gray;
+  font-weight: bold;
+  color: #aaa;
 }
 .sellValTdP{
+  font-size: 1.05rem;
   margin: 0;padding: 0;
   padding-left: 12px;
-    border-left: solid 1px gray;
-  font-weight: bold;
-  color: #cdcdcd;
+    border-left: solid 2px #333;
+  font-weight: normal;
+/*  color: #cdcdcd;  */
+  color: #aaa;
 }
 .sellPageLinkTd{
   text-align: right;
@@ -133,26 +148,31 @@ font-weight: bold;
   margin: 0;
 }
 .sellPageLinkTd img{
-  width: 20px;
-  height: 17px;
+  width: 24px;
+  height: 16px;
   padding: 0;
   margin: 0px 1px 0px 1px;
   float: left;
+  color: black;
 }
 .sellPageLinkTd a{
   min-width: 80%;
   text-align: right;
   color: #000000;
   text-decoration: none;
-  border: solid 1px #D85510;
+/*  border: solid 1px #D85510;   */
+border: solid 1px #667;
   padding: 8px 12px 5px 10px;
   margin:10px 1px 5px 1px;
   float: right;
   border-radius: 3px;
-  background-color:#D85510;
+/*  background-color:#D85510;     */
+  background-color: #444;
   font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial';
+  font-size: 1.06rem;
 }
 .sellPageLinkTd a:hover{
-  background-color:#FC7710;
+/*  background-color:#FC7710;   */
+  background-color: gray;
   text-decoration: none;
 }
