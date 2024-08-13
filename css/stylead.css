@@ -1,0 +1,81 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+@font-face {
+    font-family: 'AbyssinicaSIL'; /* Name of the font */
+    src: url('fonts/AbyssinicaSIL-Regular.ttf') format('truetype'); /* Path to the font file */
+    /* You can also specify other font properties like font-weight and font-style here */
+}
+@font-face {
+    font-family: 'EthiopicLessan'; /* Name of the font */
+    src: url('fonts/EthiopicLessan-Regular.ttf') format('truetype'); /* Path to the font file */
+    /* You can also specify other font properties like font-weight and font-style here */
+}
+/* 
+    Created on : Aug 5, 2024, 10:41:09 PM
+    Author     : loners
+*/
+.ad{
+    font-family: 'AbyssinicaSIL', 'EthiopicLessan', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif; 
+    float: left;clear: both;
+    margin:16px 16px;
+}
+/*    */
+.ad {
+    background-color: #ccc;
+    color: #667;
+}
+.ad {
+      background-color: #1F1F1F;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      height: min-content;
+    }
+
+    .ad h2 {
+      color: #FFC300;
+      margin-top: 0;
+      font-size: 1.38rem;
+      font-weight: bold;
+    }
+
+    .ad img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .ad button {
+      background-color: #FFC300;
+      border: none;
+      border-radius: 4px;
+      color: #141414;
+      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 20px;
+    }
+
+    .ad button:hover {
+      background-color: #FFAF00;
+    }
+    
+    /*
+    
+    */
+    .ad .sell_btn{
+        font-family: 'EthiopicLessan', 'AbyssinicaSIL', 'Helvetica', 'Arial' , TimesNewRoman, Georgia, sans-serif;  
+        text-align: center;
+        padding: 11px 24px 11px 24px;
+        background-color: #2f2f2f;
+        border-radius: 4px;
+        color: #f6f6f6;
+        font-size: 1.32rem;
+        font-weight: normal;
+        text-decoration: none;
+    }
+    .ad .sell_btn:hover{
+        background-color: #5f5f5f;
+    }
