@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'AbyssinicaSIL'; /* Name of the font */
-    src: url('fonts/AbyssinicaSIL-Regular.ttf') format('truetype'); /* Path to the font file */
+    src: url('https://sheik-husen-jibril.github.io/fonts/AbyssinicaSIL-Regular.ttf') format('truetype'); /* Path to the font file */
     /* You can also specify other font properties like font-weight and font-style here */
 }
 @font-face {
     font-family: 'EthiopicLessan'; /* Name of the font */
-    src: url('fonts/EthiopicLessan-Regular.ttf') format('truetype'); /* Path to the font file */
+    src: url('https://sheik-husen-jibril.github.io/fonts/EthiopicLessan-Regular.ttf') format('truetype'); /* Path to the font file */
     /* You can also specify other font properties like font-weight and font-style here */
 }
 /*
