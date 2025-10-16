@@ -1,0 +1,938 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulmate One - Views Tutorial</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .view-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .feature-list {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .code-snippet {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .navigation-flow {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .tech-stack {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .highlight {
+            background: #3498db;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Soulmate One - Views Tutorial</h1>
+
+        <p>This tutorial provides a comprehensive guide to all the views (pages) in the Soulmate One application. Each
+            section describes a specific view, its purpose, key features, and how to interact with it.</p>
+
+        <h2>1. Welcome Page (<code>resources/views/welcome.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Introduces the Soulmate One application</li>
+                <li>Provides navigation to login or registration</li>
+                <li>Showcases the main value proposition</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Gradient background with dark theme</li>
+                    <li>Prominent "Find Your Soulmate" heading</li>
+                    <li>Call-to-action buttons for "Get Started" and "Log in"</li>
+                    <li>Heart icon visual element</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Accessible at the root URL (<code>/</code>)</li>
+                <li>Header navigation shows login/register links for guests, dashboard link for authenticated users</li>
+            </ul>
+
+            <h3>Code Example</h3>
+            <div class="code-snippet">
+                <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>{{ config('app.name', 'Soulmate One') }}</title>
+                    <!-- Fonts -->
+                    <link rel="preconnect" href="https://fonts.bunny.net">
+                    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap"
+                        rel="stylesheet" />
+                    <!-- Styles / Scripts -->
+                    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+                    @vite(['resources/css/app.css', 'resources/js/app.js'])
+                    @else
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+                        body {
+                            font-family: 'Inter', sans-serif;
+                        }
+                    </style>
+                    @endif
+                </head>
+
+                <body
+                    class="dark bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white min-h-screen flex flex-col">
+                    @if (Route::has('login'))
+                    <header class="absolute top-0 right-0 px-2 py-2 z-10">
+                        <nav class="flex items-center gap-4">
+                            @auth
+                            <a href="{{ url('/dashboard') }}"
+                                class="inline-flex items-center gap-2 px-5 py-2 text-white border border-gray-400 hover:border-gray-300 rounded-lg text-sm leading-normal transition-colors">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+                                Dashboard
+                            </a>
+                            @else
+                            <a href="{{ route('login') }}"
+                                class="inline-block px-5 py-2 text-gray-300 hover:text-white border border-transparent hover:border-gray-400 rounded-lg text-sm leading-normal transition-colors">
+                                Log in
+                            </a>
+                            @if (Route::has('register'))
+                            <a href="{{ route('register') }}"
+                                class="inline-block px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg text-sm leading-normal transition-all shadow-lg hover:shadow-xl">
+                                Get Started
+                            </a>
+                            @endif
+                            @endauth
+                        </nav>
+                    </header>
+                    @endif
+                    <div class="flex items-center justify-center w-full flex-1 px-6 lg:px-8">
+                        <main
+                            class="flex max-w-[335px] w-full flex-col items-center text-center lg:max-w-4xl lg:flex-row lg:items-start lg:text-left">
+                            <!-- Text Content -->
+                            <div class="flex-1 mb-8 lg:mb-0 lg:mr-12">
+                                <h1
+                                    class="text-4xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                                    Find Your Soulmate
+                                </h1>
+                                <p class="text-lg lg:text-xl text-gray-300 mb-6 leading-relaxed">
+                                    Find your perfect match today. Join our community of singles looking for love.
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                    @if (Route::has('register'))
+                                    <a href="{{ route('register') }}"
+                                        class="inline-block px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-full text-lg leading-normal transition-all shadow-lg hover:shadow-xl">
+                                        Get Started
+                                    </a>
+                                    @endif
+                                </div>
+                            </div>
+                            <!-- Visual Element -->
+                            <div class="relative">
+                                <div
+                                    class="w-64 h-64 lg:w-80 lg:h-80 bg-gradient-to-br from-pink-200 to-purple-300 rounded-full flex items-center justify-center shadow-2xl">
+                                    <svg class="w-32 h-32 lg:w-40 lg:h-40" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" fill="none" stroke="#ff6b9d" stroke-width="1" />
+                                        <path fill="#ff6b9d"
+                                            d="M12 8 C12 6, 16 6, 16 8 C16 10, 12 12, 12 14 C12 12, 8 10, 8 8 C8 6, 12 6, 12 8 Z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </body>
+
+                </html>
+            </div>
+        </div>
+
+        <h2>2. Login Page (<code>resources/views/auth/login.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>User authentication</li>
+                <li>Secure access to the application</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Email and password input fields</li>
+                    <li>"Remember me" checkbox</li>
+                    <li>Links to forgot password and registration</li>
+                    <li>Session status messages</li>
+                    <li>Gradient background matching the theme</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>login</code></li>
+                <li>Accessible from welcome page header or registration page</li>
+            </ul>
+        </div>
+
+        <h2>3. Registration Page (<code>resources/views/auth/register.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>User registration</li>
+                <li>Account creation</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Name, email, password, and confirm password fields</li>
+                    <li>Links to login page</li>
+                    <li>Validation error handling</li>
+                    <li>Gradient background</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>register</code></li>
+                <li>Accessible from welcome page or login page</li>
+            </ul>
+        </div>
+
+        <h2>4. Forgot Password Page (<code>resources/views/auth/forgot-password.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Password recovery</li>
+                <li>Security feature for account access</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Email input field</li>
+                    <li>Session status display</li>
+                    <li>Uses guest layout</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>password.request</code></li>
+                <li>Accessible from login page</li>
+            </ul>
+        </div>
+
+        <h2>5. Reset Password Page (<code>resources/views/auth/reset-password.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Password reset completion</li>
+                <li>Secure password update</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Email, password, and confirm password fields</li>
+                    <li>Hidden token field</li>
+                    <li>Uses guest layout</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>password.reset</code></li>
+                <li>Accessed via email link</li>
+            </ul>
+        </div>
+
+        <h2>6. Verify Email Page (<code>resources/views/auth/verify-email.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Email verification</li>
+                <li>Account security</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Instructions for email verification</li>
+                    <li>Resend verification email button</li>
+                    <li>Logout option</li>
+                    <li>Uses guest layout</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>verification.notice</code></li>
+                <li>Automatic redirect after registration</li>
+            </ul>
+        </div>
+
+        <h2>7. Confirm Password Page (<code>resources/views/auth/confirm-password.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Additional security layer</li>
+                <li>Protects sensitive actions</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Password input field</li>
+                    <li>Uses guest layout</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>password.confirm</code></li>
+                <li>Triggered by certain protected actions</li>
+            </ul>
+        </div>
+
+        <h2>8. Dashboard (<code>resources/views/dashboard.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Central hub for application features</li>
+                <li>Quick access to main functionalities</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Three main cards: My Profile, My Preferences, My Matches</li>
+                    <li>Gradient card designs with hover effects</li>
+                    <li>Uses app layout</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>dashboard</code></li>
+                <li>Default redirect after login</li>
+            </ul>
+
+            <h3>Code Example</h3>
+            <div class="code-snippet">
+                <x-app-layout>
+                    <x-slot name="header">
+                        <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+                            {{ __('Dashboard') }}
+                        </h2>
+                    </x-slot>
+
+                    <div class="py-12 mx-2 md:mx-0 ">
+                        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                            <div
+                                class="bg-gray-800/50 backdrop-blur-sm overflow-hidden shadow-2xl rounded-md sm:rounded-lg border border-gray-700/50">
+                                <div class="p-6 text-gray-100">
+                                    <div class="text-center mb-8">
+                                        <h3 class="text-3xl font-bold text-white mb-2">Welcome to Soulmate Finder!</h3>
+                                        <p class="text-gray-300 text-lg">Find your perfect match for marriage</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        <!-- Profile Card -->
+                                        <div
+                                            class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl p-6 text-white shadow-2xl transform hover:scale-105 transition duration-300">
+                                            <div class="flex items-center mb-4">
+                                                <svg class="w-10 h-10 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <h4 class="text-2xl font-bold">My Profile</h4>
+                                            </div>
+                                            <p class="mb-6 text-purple-100">Set up your dating profile to attract
+                                                potential matches.</p>
+                                            <a href="{{ route('soulmate-profile.edit') }}"
+                                                class="bg-white text-purple-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition duration-300 inline-flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                    </path>
+                                                </svg>
+                                                Edit Profile
+                                            </a>
+                                        </div>
+
+                                        <!-- Preferences Card -->
+                                        <div
+                                            class="bg-gradient-to-br from-blue-600 to-teal-600 rounded-xl p-6 text-white shadow-2xl transform hover:scale-105 transition duration-300">
+                                            <div class="flex items-center mb-4">
+                                                <svg class="w-10 h-10 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                <h4 class="text-2xl font-bold">My Preferences</h4>
+                                            </div>
+                                            <p class="mb-6 text-blue-100">Tell us what you're looking for in a partner.
+                                            </p>
+                                            <a href="{{ route('soulmate-preference.edit') }}"
+                                                class="bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition duration-300 inline-flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                                    </path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                </svg>
+                                                Set Preferences
+                                            </a>
+                                        </div>
+
+                                        <!-- Matches Card -->
+                                        <div
+                                            class="bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl p-6 text-white shadow-2xl transform hover:scale-105 transition duration-300">
+                                            <div class="flex items-center mb-4">
+                                                <svg class="w-10 h-10 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <h4 class="text-2xl font-bold">My Matches</h4>
+                                            </div>
+                                            <p class="mb-6 text-green-100">View your potential matches and connections.
+                                            </p>
+                                            <a href="{{ route('soulmate-matches.index') }}"
+                                                class="bg-white text-green-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition duration-300 inline-flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                    </path>
+                                                </svg>
+                                                View Matches
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </x-app-layout>
+            </div>
+        </div>
+
+        <h2>9. Soulmate Profile Edit (<code>resources/views/soulmate/profile/edit.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Profile creation and management</li>
+                <li>Personal information input</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Age, gender, bio, country, city, interests fields</li>
+                    <li>Profile photo upload</li>
+                    <li>Country and city dropdowns (with AJAX for cities)</li>
+                    <li>Form validation</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>soulmate-profile.edit</code></li>
+                <li>Accessible from dashboard or profile show page</li>
+            </ul>
+
+            <h3>Code Example</h3>
+            <div class="code-snippet">
+                <x-app-layout>
+                    <x-slot name="header">
+                        <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+                            {{ __('Edit Profile') }}
+                        </h2>
+                    </x-slot>
+
+                    <div class="py-12 mx-2 md:mx-0">
+                        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                            <div
+                                class="bg-gray-800 overflow-hidden shadow-xl rounded-md sm:rounded-lg border border-gray-700">
+                                <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6">
+                                    <h3 class="text-2xl font-bold text-white">Create Your Soulmate Profile</h3>
+                                    <p class="text-green-100 mt-2">Tell us about yourself to find your perfect match</p>
+                                </div>
+
+                                <div class="p-6 text-gray-100">
+                                    <form method="POST" action="{{ route('soulmate-profile.update') }}"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-2 md:px-0">
+                                            <!-- Age -->
+                                            <div>
+                                                <x-input-label for="age" :value="__('Age')"
+                                                    class="text-gray-200 font-semibold" />
+                                                <x-text-input id="age"
+                                                    class="block mt-1 w-full bg-gray-700 border-gray-600 text-gray-200 focus:border-blue-400 rounded-lg shadow-sm"
+                                                    type="number" name="age" :value="old('age', $profile->age)" required
+                                                    autofocus autocomplete="age" />
+                                                <x-input-error :messages="$errors->get('age')" class="mt-2" />
+                                            </div>
+
+                                            <!-- Gender -->
+                                            <div>
+                                                <x-input-label for="gender" :value="__('Gender')"
+                                                    class="text-gray-200 font-semibold" />
+                                                <select id="gender" name="gender"
+                                                    class="block mt-1 w-full bg-gray-700 border-gray-600 text-gray-200 focus:border-blue-400 rounded-lg shadow-sm"
+                                                    required>
+                                                    <option value="male" {{ old('gender', $profile->gender) == 'male' ?
+                                                        'selected' : '' }}>Male</option>
+                                                    <option value="female" {{ old('gender', $profile->gender) ==
+                                                        'female' ? 'selected' : '' }}>Female
+                                                    </option>
+                                                    <option value="other" {{ old('gender', $profile->gender) == 'other'
+                                                        ? 'selected' : '' }}>Other
+                                                    </option>
+                                                </select>
+                                                <x-input-error :messages="$errors->get('gender')" class="mt-2" />
+                                            </div>
+                                        </div>
+
+                                        <!-- Bio -->
+                                        <div class="mt-6">
+                                            <x-input-label for="bio" :value="__('About Me')"
+                                                class="text-gray-200 font-semibold" />
+                                            <textarea id="bio" name="bio"
+                                                class="block mt-1 w-full bg-gray-700 border-gray-600 text-gray-200 focus:border-blue-400 rounded-lg shadow-sm"
+                                                rows="4"
+                                                placeholder="Tell us about yourself...">{{ old('bio', $profile->bio) }}</textarea>
+                                            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-6 px-2 md:px-0">
+                                            <!-- Country -->
+                                            <div>
+                                                <x-input-label for="country" :value="__('Country')"
+                                                    class="text-gray-200 font-semibold" />
+                                                <select id="country"
+                                                    class="block mt-1 w-full bg-gray-700 border-gray-600 text-gray-200 focus:border-blue-400 rounded-lg shadow-sm"
+                                                    name="country">
+                                                    <option value="">Select Country</option>
+                                                    @foreach ($countries as $country)
+                                                    <option value="{{ $country->cca3 }}" {{ old('country', $profile->
+                                                        country) == $country->cca3 ? 'selected' : '' }}>
+                                                        {{ $country->name->common }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <x-input-error :messages="$errors->get('country')" class="mt-2" />
+                                            </div>
+
+                                            <!-- City -->
+                                            <div>
+                                                <x-input-label for="city" :value="__('City')"
+                                                    class="text-gray-200 font-semibold" />
+                                                <select id="city"
+                                                    class="block mt-1 w-full bg-gray-700 border-gray-600 text-gray-200 focus:border-blue-400 rounded-lg shadow-sm"
+                                                    name="city">
+                                                    <option value="">Select City</option>
+                                                    @if (old('city', $profile->city))
+                                                    <option value="{{ old('city', $profile->city) }}" selected>
+                                                        {{ old('city', $profile->city) }}</option>
+                                                    @endif
+                                                </select>
+                                                <x-input-error :messages="$errors->get('city')" class="mt-2" />
+                                            </div>
+
+                                            <!-- Interests -->
+                                            <div>
+                                                <x-input-label for="interests" :value="__('Interests')"
+                                                    class="text-gray-200 font-semibold" />
+                                                <x-text-input id="interests"
+                                                    class="block mt-1 w-full bg-gray-700 border-gray-600 text-gray-200 focus:border-blue-400 rounded-lg shadow-sm"
+                                                    type="text" name="interests" :value="old(
+                                        'interests',
+                                        is_array($profile->interests) ? implode(', ', $profile->interests) : '',
+                                    )" placeholder="reading, sports, music, travel..." />
+                                                <x-input-error :messages="$errors->get('interests')" class="mt-2" />
+                                            </div>
+                                        </div>
+
+                                        <!-- Photo -->
+                                        <div class="mt-6">
+                                            <x-input-label for="photo" :value="__('Profile Photo')"
+                                                class="text-gray-200 font-semibold" />
+                                            @if ($profile->photo && (\Storage::disk('public')->exists($profile->photo)
+                                            || file_exists(public_path($profile->photo))))
+                                            <div class="mt-2 mb-4">
+                                                <p class="text-sm text-gray-300 mb-2">Current Photo:</p>
+                                                <img src="{{ \Storage::disk('public')->exists($profile->photo) ? asset('storage/' . $profile->photo) : asset($profile->photo) }}"
+                                                    alt="Current Profile Photo"
+                                                    class="w-24 h-24 rounded-full object-cover border-2 border-gray-600">
+                                            </div>
+                                            @endif
+                                            <div class="mt-1 flex items-center">
+                                                <input id="photo"
+                                                    class="block w-full text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-600 file:text-gray-200 hover:file:bg-gray-500"
+                                                    type="file" name="photo" accept="image/*" />
+                                            </div>
+                                            <p class="mt-1 text-sm text-gray-300">Upload a new photo to update your
+                                                profile</p>
+                                            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
+                                        </div>
+
+                                        <div class="flex items-center justify-end mt-8 pt-6 border-t border-gray-700">
+                                            <x-primary-button
+                                                class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg">
+                                                {{ __('Save Profile') }}
+                                            </x-primary-button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </x-app-layout>
+            </div>
+        </div>
+
+        <h2>10. Soulmate Profile Show (<code>resources/views/soulmate/profile/show.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Profile viewing</li>
+                <li>Quick access to edit functions</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Profile photo display</li>
+                    <li>Basic information (age, gender, location)</li>
+                    <li>Bio and interests display</li>
+                    <li>Preferences summary</li>
+                    <li>Edit buttons</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>soulmate-profile.show</code></li>
+                <li>Accessible from various places (may need to check routes)</li>
+            </ul>
+        </div>
+
+        <h2>11. Preferences Edit (<code>resources/views/soulmate/preference/edit.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Preference configuration</li>
+                <li>Matching criteria setup</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Age range selection</li>
+                    <li>Gender preference</li>
+                    <li>Country and city preferences</li>
+                    <li>Interests preferences</li>
+                    <li>Form validation</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>soulmate-preference.edit</code></li>
+                <li>Accessible from dashboard or profile pages</li>
+            </ul>
+        </div>
+
+        <h2>12. Matches Index (<code>resources/views/soulmate/matches/index.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Match discovery and management</li>
+                <li>Communication initiation</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Three tabs: Matches, Sent Requests, Received Requests</li>
+                    <li>Potential matches grid with send request buttons</li>
+                    <li>Accepted matches with chat links</li>
+                    <li>AJAX-powered request sending</li>
+                    <li>Dynamic tab content</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>soulmate-matches.index</code></li>
+                <li>Accessible from dashboard</li>
+            </ul>
+        </div>
+
+        <h2>13. Chat Show (<code>resources/views/soulmate/chat/show.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Communication between matches</li>
+                <li>Message exchange</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Message history display</li>
+                    <li>Real-time message sending (with AJAX)</li>
+                    <li>Emoji button for message enhancement</li>
+                    <li>Auto-scroll and polling for new messages</li>
+                    <li>User avatars and timestamps</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>chat.show</code></li>
+                <li>Accessible from matches page for accepted matches</li>
+            </ul>
+        </div>
+
+        <h2>14. General Profile Edit (<code>resources/views/profile/edit.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Account information management</li>
+                <li>Password and profile updates</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Three sections: Profile Info, Password Update, Delete Account</li>
+                    <li>Includes partial views for each section</li>
+                    <li>Uses app layout</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Route: <code>profile.edit</code></li>
+                <li>Typically accessible from navigation menu</li>
+            </ul>
+        </div>
+
+        <h2>15. Update Profile Information Form
+            (<code>resources/views/profile/partials/update-profile-information-form.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Name and email updates</li>
+                <li>Email verification handling</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Name and email fields</li>
+                    <li>Email verification status and resend option</li>
+                    <li>Form validation</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Included in profile edit page</li>
+            </ul>
+        </div>
+
+        <h2>16. Update Password Form (<code>resources/views/profile/partials/update-password-form.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Password security</li>
+                <li>Account protection</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Current password, new password, confirm password fields</li>
+                    <li>Success message display</li>
+                    <li>Form validation</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Included in profile edit page</li>
+            </ul>
+        </div>
+
+        <h2>17. Delete User Form (<code>resources/views/profile/partials/delete-user-form.blade.php</code>)</h2>
+        <div class="view-section">
+            <h3>Purpose</h3>
+            <ul>
+                <li>Account removal</li>
+                <li>Data privacy compliance</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Confirmation modal</li>
+                    <li>Password verification</li>
+                    <li>Danger button styling</li>
+                    <li>Warning messages</li>
+                </ul>
+            </div>
+
+            <h3>Navigation</h3>
+            <ul>
+                <li>Included in profile edit page</li>
+            </ul>
+        </div>
+
+        <h2>Layout Components</h2>
+        <div class="view-section">
+            <p>The application uses several layout components:</p>
+            <ul>
+                <li><code>layouts/app.blade.php</code>: Main application layout with navigation</li>
+                <li><code>layouts/guest.blade.php</code>: Guest layout for auth pages</li>
+                <li><code>layouts/navigation.blade.php</code>: Navigation bar component</li>
+            </ul>
+        </div>
+
+        <h2>Component Library</h2>
+        <div class="view-section">
+            <p>Common components used across views:</p>
+            <ul>
+                <li><code>components/application-logo.blade.php</code></li>
+                <li><code>components/auth-session-status.blade.php</code></li>
+                <li><code>components/dropdown.blade.php</code></li>
+                <li><code>components/input-error.blade.php</code></li>
+                <li><code>components/input-label.blade.php</code></li>
+                <li><code>components/modal.blade.php</code></li>
+                <li><code>components/nav-link.blade.php</code></li>
+                <li><code>components/primary-button.blade.php</code></li>
+                <li><code>components/secondary-button.blade.php</code></li>
+                <li><code>components/text-input.blade.php</code></li>
+            </ul>
+        </div>
+
+        <div class="tech-stack">
+            <h2>Key Technologies Used</h2>
+            <ul>
+                <li><span class="highlight">Laravel Blade</span> templating</li>
+                <li><span class="highlight">Tailwind CSS</span> for styling</li>
+                <li><span class="highlight">Alpine.js</span> for interactivity</li>
+                <li><span class="highlight">AJAX</span> for dynamic content</li>
+                <li><span class="highlight">File uploads</span> for profile photos</li>
+            </ul>
+        </div>
+
+        <div class="navigation-flow">
+            <h2>Navigation Flow</h2>
+            <ol>
+                <li><strong>Guest Flow</strong>: Welcome → Register/Login → Dashboard</li>
+                <li><strong>Profile Setup</strong>: Dashboard → Edit Profile → Edit Preferences</li>
+                <li><strong>Matching Flow</strong>: Dashboard → View Matches → Send Requests → Chat (if accepted)</li>
+                <li><strong>Account Management</strong>: Profile Edit → Update Info/Password/Delete</li>
+            </ol>
+        </div>
+
+        <p>This covers all the main views in the Soulmate One application. Each view serves a specific purpose in the
+            user journey from registration to finding matches and communicating.</p>
+    </div>
+</body>
+
+</html>
