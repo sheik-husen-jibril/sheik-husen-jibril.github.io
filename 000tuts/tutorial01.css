@@ -1,0 +1,287 @@
+/* Tutorial CSS Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+h2 {
+  color: #2c3e50;
+  margin: 30px 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+  font-size: 1.8rem;
+}
+
+p {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+ul,
+ol {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+/* Code block styling */
+pre {
+  background: rgba(44, 62, 80, 0.9);
+  color: #ecf0f1;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 15px 0;
+  overflow-x: auto;
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
+  border-left: 4px solid #3498db;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+code {
+  background: rgba(52, 152, 219, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  color: #2c3e50;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+/* Enhanced code syntax highlighting */
+pre code {
+  background: none;
+  padding: 0;
+  color: #ecf0f1;
+  border: none;
+  font-size: 0.9rem;
+}
+
+/* Comment styling */
+pre code::before {
+  content: "";
+}
+
+/* Key terms highlighting */
+strong {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* Table styling for architecture overview */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #3498db;
+  color: white;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background: rgba(52, 152, 219, 0.1);
+}
+
+/* Navigation and structure */
+.toc {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.toc h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #bdc3c7;
+}
+
+.toc ul {
+  padding-left: 20px;
+}
+
+.toc li {
+  margin-bottom: 8px;
+}
+
+.toc a {
+  color: #3498db;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.toc a:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
+
+/* Callout boxes for important information */
+.callout {
+  background: rgba(243, 156, 18, 0.1);
+  border-left: 4px solid #f39c12;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.callout.success {
+  background: rgba(46, 204, 113, 0.1);
+  border-left-color: #2ecc71;
+}
+
+.callout.warning {
+  background: rgba(231, 76, 60, 0.1);
+  border-left-color: #e74c3c;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  pre {
+    padding: 15px;
+    font-size: 0.8rem;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  td,
+  th {
+    padding: 8px 10px;
+  }
+}
+
+/* Animation for interactive elements */
+.animate-in {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Highlight for code sections */
+.highlight {
+  background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+  padding: 2px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 5px 0;
+}
+
+/* Footer styling */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  color: #fff;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+footer p {
+  font-size: 1rem;
+}
+
+/* Interactive demo areas */
+.demo-area {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px dashed #3498db;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.demo-area h3 {
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+/* Progress indicators */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(52, 152, 219, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #3498db;
+  transition: width 0.3s ease;
+}
+
+/* Badge styling for file names */
+.badge {
+  display: inline-block;
+  background: #34495e;
+  color: #ecf0f1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  margin: 0 2px;
+}

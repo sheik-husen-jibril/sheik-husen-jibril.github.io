@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 3: View, Initialization & Entry Point</title>
+    <link rel="stylesheet" href="tutorial01.css">
+</head>
+
+<body>
+    <h1>🎨 GitHub Billiards View & Initialization</h1>
+    <p>This tutorial explains how the game is rendered to the screen and how the application starts up.</p>
+
+    <h2>1. 🎬 GameView Rendering System</h2>
+    <p>Located in <code>src/game-view.js</code>, this class manages all visual rendering:</p>
+    <pre><code>class GameView {
+  constructor(game, ctx) {
+    this.game = game;                  // Reference to Game model
+    this.table = this.game.table;      // Reference to Table
+    this.ctx = ctx;                    // Canvas 2D context
+    this.lastTime = 0;                 // For timeDelta calculation
+    this.info = document.querySelector(".info");    
+    this.init();                       // Initialize the view
+  }</code></pre>
+
+    <p>Initialization and animation loop:</p>
+    <pre><code>init() {
+  this.resetButton();
+
+  let table = document.getElementById("table");
+  let info = document.querySelector(".info");
+  let instructions = document.querySelector(".instructions");
+  let text = document.querySelector(".animate-flicker");
+
+  // Start animation loop
+  requestAnimationFrame(this.animate.bind(this))   
+
+  // Show instructions for 3.5 seconds
+  setTimeout(() => {
+    text.innerHTML = "Click anywhere to continue!"
+    window.addEventListener("click", () => {    
+      table.classList.remove("hidden");        
+      info.classList.remove("hidden");
+      instructions.classList.add("hidden");    
+    }, {once: true})    
+  }, 3500);       
+}
+
+animate(time) {
+  const timeDelta = time - this.lastTime;
+  this.game.update(timeDelta);         // Update game logic
+  this.draw();                         // Render current frame
+  this.lastTime = time;
+  requestAnimationFrame(this.animate.bind(this)); // Next frame
+}</code></pre>
+
+    <p>Rendering pipeline:</p>
+    <pre><code>draw() {   
+  // Clear canvas
+  this.ctx.clearRect(0, 0, this.table.width, this.table.height);
+  
+  // Draw all balls
+  this.game.table.balls.forEach(ball => ball.draw(this.ctx));
+  
+  // Draw pocketed balls in side display
+  this.game.table.drawPocketed();
+  
+  // Draw cue stick (only when not in hand)
+  if (!this.game.cue.ballInHand) {
+    this.game.stick.draw(this.ctx, this.game.cue);
+  }  
+}
+
+resetButton() {    
+  const reset = document.querySelector("button");   
+
+  reset.addEventListener("click", () => {
+    this.table.resetTable();           // Reset table state
+    this.game.reset();                 // Reset game state
+  })
+}</code></pre>
+
+    <h2>2. 🚀 Application Entry Point (index.js)</h2>
+    <p>The main entry file that bootstraps the entire application:</p>
+    <pre><code>// Import required modules
+const Util = require("./util.js");
+const GameView = require("./game-view.js")
+const Game = require("./game.js")
+
+// Wait for DOM to be fully loaded
+document.addEventListener("DOMContentLoaded", event => {
+  // Set up canvas
+  const canvas = document.getElementById("table");
+  const ctx = canvas.getContext('2d');
+  canvas.width = 1200;                 // Fixed width
+  canvas.height = 600;                 // Fixed height (2:1 ratio)
+  
+  // Create game instances
+  let game = new Game(canvas, ctx);
+  let gameView = new GameView(game, ctx);
+  
+  // Debug logging (development only)
+  document.addEventListener("click", e => {
+    console.log(Util.getCursorPos(e));
+  })
+})</code></pre>
+
+    <p>Initialization sequence:</p>
+    <ol>
+        <li><strong>DOM Ready</strong>: Wait for HTML to load completely</li>
+        <li><strong>Canvas Setup</strong>: Configure 1200x600 pixel drawing surface</li>
+        <li><strong>Game Creation</strong>: Instantiate Game with canvas context</li>
+        <li><strong>View Creation</strong>: Create GameView with game reference</li>
+        <li><strong>Animation Start</strong>: Begin render loop with requestAnimationFrame</li>
+        <li><strong>UI Setup</strong>: Show instructions, hide game elements initially</li>
+    </ol>
+
+    <h2>3. 🖼️ HTML Structure (index.html)</h2>
+    <p>The main HTML file provides the application skeleton:</p>
+    <pre><code><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="./src/assets/images/ball_8.png">
+  
+  <!-- Open Graph metadata for social sharing -->
+  <meta property="og:title" content="JS Billiards" />
+  <meta property="og:image" content="jsbilliards.png" />
+  <meta property="og:description" 
+        content="8-ball pool with 2 players built with Javascript, HTML, Canvas." />
+  <meta property="og:url" content="https://cptleo92.github.io/JSBilliards/" />
+  
+  <!-- External dependencies -->
+  <link rel="stylesheet" href="./dist/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  
+  <!-- Compiled JavaScript bundle -->
+  <script type="text/javascript" src="./dist/main.js"></script>
+  <title>JS Billiards!</title>
+</head>
+<body>
+  <!-- Instructions overlay -->
+  <div class="instructions animate__animated animate__fadeInDown animate__slow">
+    <h1>Welcome to JS Billiards!</h1>
+    <p>This is your classic game of 8-ball pool. The controls are simple:</p>
+    <ul>
+      <li>If you have ball in hand, click to place the ball.</li>
+      <li>Click to set the angle. You will see the stick rotate along with your mouse position.</li>
+      <li>Click, <strong>HOLD</strong> and <strong>RELEASE</strong> to shoot! The power of the shot corresponds with the distance from the stick to the cue ball.</li>
+    </ul>
+    <div class="animate-flicker hidden">Loading...</div>
+  </div>
+  
+  <!-- Main game canvas -->
+  <canvas id="table" class="hidden"></canvas>
+  
+  <!-- Game information display -->
+  <section class="info hidden unselectable">
+    <section class="info-top">
+      <p class="tracker"></p>                    <!-- Turn and status text -->
+    </section>
+    <section class="info-bottom">
+      <section class="info-bottom-left"></section>    <!-- Pocketed solids -->
+      <section class="info-bottom-middle">
+        <button class="reset">Reset Table</button>   <!-- Game reset -->
+        <div class="socials">                       <!-- Developer links -->
+          <a href="http://www.linkedin.com/in/sirleoc">
+            <img src="src/assets/images/linkedin_icon_white.png" alt="LinkedIn">
+          </a>
+          <a href="http://www.github.com/cptleo92">
+            <img src="src/assets/images/github_icon_white.png" alt="Github">
+          </a>
+        </div>
+      </section>
+      <section class="info-bottom-right"></section>   <!-- Pocketed stripess -->
+    </section>
+  </section>
+</body>
+</html></code></pre>
+
+    <h2>4. 🎨 Ball Rendering System</h2>
+    <p>Balls use sprite-based rendering with sinking animations:</p>
+    <pre><code>draw(ctx) {      
+  if (this.onTable) {     
+    // Draw ball sprite at correct position
+    ctx.drawImage(this.img, 
+      Math.round(this.pos[0] - this.radius),     // X position (centered)
+      Math.round(this.pos[1] - this.radius),     // Y position (centered)
+      this.size,                                 // Width
+      this.size                                  // Height
+    );
+  }
+
+  // Sinking animation when ball enters pocket
+  if (this.sinking && this.size >= 0) {
+    ctx.drawImage(this.img, 
+      this.pos[0] - this.radius, 
+      this.pos[1] - this.radius, 
+      this.size--,                               // Shrink size each frame
+      this.size--
+    );
+  }
+}</code></pre>
+
+    <h2>5. 🏁 Pocketed Ball Display</h2>
+    <p>Side display shows which balls have been pocketed:</p>
+    <pre><code>drawPocketed() {
+  this.pocketed.forEach(ball => {
+    if (ball.type === 'solid') {
+      this.solidSection.appendChild(ball.img);    // Left side for solids
+    } else {
+      this.stripeSection.appendChild(ball.img);   // Right side for stripess
+    }
+  })
+}</code></pre>
+
+    <p>The pocketed display uses DOM manipulation rather than canvas drawing,
+        allowing each ball image to be individually positioned and animated.</p>
+
+    <h2>6. 🎯 Event Handling Architecture</h2>
+    <p>Multiples layers of event handling throughout the application:</p>
+    <pre><code>// Game level - main click handler
+play() {  
+  const clickToHit = (e) => {  
+    if (this.cue.canBeHit && this.waitForHit) {
+      this.stick.rotating = false;
+      this.cue.calcHit(e, () => {        
+        this.waitForHit = false;        
+        this.stick.visible = false;
+      });
+    }
+  }      
+  this.canvas.addEventListener("click", clickToHit);    
+}
+
+// CueBall level - power meter
+holdMouseForPower(callback) {   
+  const powerCounter = () => {
+    const interval = setInterval(() => {
+      // Power oscillation logic
+    }, 50);      
+    
+    const clearCounter = () => {
+      clearInterval(interval);
+      this.canvas.removeEventListener("mousedown", powerCounter);
+      callback(this.power);
+      this.power = 1;
+    }
+   
+    this.canvas.addEventListener("mouseup", clearCounter, {once: true});     
+  }
+  this.canvas.addEventListener("mousedown", powerCounter);
+}
+
+// Stick level - mouse tracking
+constructor() {
+  this.canvas = document.getElementById("table");
+  this.canvas.addEventListener("mousemove", e => {
+    if (this.rotating) {      
+      [this.mouseX, this.mouseY] = Util.getCursorPos(e);
+    }
+  })
+}</code></pre>
+
+    <h2>7. 📦 Build System & Asset Management</h2>
+    <p>The project uses a build system to bundle assets:</p>
+    <ul>
+        <li><strong>Source assets</strong>: Images in <code>src/assets/images/</code></li>
+        <li><strong>Compiled output</strong>: JavaScript in <code>dist/main.js</code></li>
+        <li><strong>CSS bundling</strong>: Styles in <code>dist/styles.css</code></li>
+        <li><strong>Image optimization</strong>: Individual PNG files for each ball</li>
+        <li><strong>Font loading</strong>: Google Fonts for consistent typography</li>
+    </ul>
+
+    <h2>🏗️ Application Architecture Flow</h2>
+    <p>Data flow and initialization sequence:</p>
+    <pre><code>1. index.html loads
+   ↓
+2. index.js executes (DOM ready)
+   ↓
+3. Canvas setup (1200x600)
+   ↓
+4. Game instance created
+   ├── Table created
+   │   ├── 16 Ball instances created
+   │   ├── 18 Wall instances created  
+   │   ├── 6 Pocket instances created
+   │   └── Ball positions set
+   ├── 2 Player instances created
+   ├── Stick instance created
+   └── Event handlers attached
+   ↓
+5. GameView instance created
+   ├── Animation loop started
+   ├── UI elements configured
+   └── Instructions displayed
+   ↓
+6. User interaction begins
+   ├── Mouse events → Game logic
+   ├── Game updates → View renders
+   └── Animation loop continues</code></pre>
+
+    <h2>🔧 Key Integration Points</h2>
+    <p>Critical connections between model and view:</p>
+    <ul>
+        <li><strong>Canvas Context Sharing</strong>: Both Game and GameView use same ctx</li>
+        <li><strong>Object References</strong>: GameView holds references to Game objects</li>
+        <li><strong>Event Delegation</strong>: Canvas events handled at multiple levels</li>
+        <li><strong>State Synchronization</strong>: Model changes immediately trigger view updates</li>
+        <li><strong>Asset Loading</strong>: Images loaded asynchronously, used by multiple classes</li>
+        <li><strong>Coordinate Systems</strong>: Screen coordinates converted to canvas coordinates</li>
+    </ul>
+</body>
+
+</html>

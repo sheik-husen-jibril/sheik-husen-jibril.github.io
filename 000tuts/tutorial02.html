@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 2: Game Logic & Physics Engine</title>
+    <link rel="stylesheet" href="tutorial01.css">
+</head>
+
+<body>
+    <h1>🛠️ GitHub Billiards Physics Engine</h1>
+    <p>This tutorial explains the game logic, physics calculations, and interaction systems.</p>
+
+    <h2>1. 🔄 Game Loop System (game.js)</h2>
+    <p>The main game class orchestrates all game logic and physics updates:</p>
+    <pre><code>class Game {
+  constructor(canvas, ctx) {
+    this.canvas = canvas;
+    this.table = new Table(canvas, ctx);
+    this.pockets = this.table.pockets;
+    this.walls = this.table.walls;
+    this.balls = this.table.balls;
+    this.cue = this.table.balls[0];    // First ball is always cue ball
+    
+    // Game state
+    this.players = [new Player(1), new Player(2)];
+    this.waitForHit = true;            // Whether waiting for player shot
+    this.openBreak = true;             // Whether this is opening break
+    this.currentPlayer = this.players[0];
+    this.otherPlayer = this.players[1];
+    this.pocketed = null;              // Last pocketed ball
+    this.firstBallHit = null;          // First ball hit by cue
+    this.scratched = false;            // Whether player scratched
+    this.over = false;                 // Whether game is over
+    
+    this.stick = new Stick(this.canvas);
+    this.updateTracker();
+    this.play();
+  }</code></pre>
+
+    <p>Core game loop methods:</p>
+    <pre><code>update(timeDelta) {
+  // Main physics update loop
+  this.moveBalls(timeDelta);           // Update ball positions
+  this.detectCollisions();             // Ball-to-ball collisions
+  this.detectWallCollisions();         // Ball-to-wall collisions  
+  this.detectPocketed();               // Check for pocketed balls
+  
+  if (!this.waitForHit) {
+    this.checkStopped();               // Check if all balls stopped moving
+  }
+}
+
+checkStopped() {
+  // End turn when all balls come to rest
+  if (this.balls.every(ball => ball.isStationary())) {
+    this.waitForHit = true;
+    this.endOfTurn();
+  }
+}</code></pre>
+
+    <h2>2. 🎯 Turn Management System</h2>
+    <p>Comprehensive turn-based logic following 8-ball rules:</p>
+    <pre><code>endOfTurn() {
+  // Check if current player has pocketed all their type
+  let checkBalls = this.table.pocketed.filter(ball => 
+    ball.type === this.currentPlayer.ballType);
+  if (checkBalls.length === 7) {
+    this.currentPlayer.lastBall = true;
+  }
+
+  // Check for game end (8-ball pocketed)
+  if (!this.balls[8].onTable && !this.over) {
+    this.gameOver();
+    this.over = true;
+  }
+
+  this.checkScratch();
+  if (this.scratched) {
+    this.cue.handleScratch();     
+    this.resolveTurn(true);           // Switch player on scratch
+  } else if (this.pocketed !== null) {   
+    let type = this.pocketed.type;        
+    if (this.openBreak && type !== 'white') {
+      this.assignType(type);          // Assign solids/stripes on break
+      this.openBreak = false;           
+      this.resolveTurn(false);        // Continue turn
+    } else if (type !== this.currentPlayer.ballType) {          
+      this.resolveTurn(true);         // Switch player - wrong type
+    } else {
+      this.resolveTurn(false);        // Continue turn - correct type
+    }
+  } else {
+    this.resolveTurn(true);           // Switch player - no balls pocketed
+  }   
+}
+
+checkScratch() {
+  // Various ways to scratch (foul)
+  if (this.firstBallHit === null) {
+    this.scratched = true;            // Missed all balls
+  } else if (this.firstBallHit.type === 'eight') {
+    if (!this.currentPlayer.lastBall) {
+      this.scratched = true;          // Hit 8-ball early
+    }
+  } else {
+    // Hit wrong type (not on break)
+    if (this.currentPlayer.ballType !== this.firstBallHit.type && !this.openBreak) {  
+      this.scratched = true;      
+    }  
+  }
+}</code></pre>
+
+    <h2>3. 🎱 Collision Detection System</h2>
+    <p>Multi-layered collision detection for different object types:</p>
+    <pre><code>// Ball-to-ball collision detection
+detectCollisions() {       
+  let obj1, obj2;    
+  let colDist = this.cue.radius * 2.1;    // Collision threshold
+    
+  for (let i = 0; i < 16; i++) {
+    obj1 = this.balls[i];        
+    if (!obj1.onTable) continue;
+    
+    for (let j = i + 1; j < 16; j++) {
+      obj2 = this.balls[j];    
+      if (!obj2.onTable) continue;
+      
+      if (Util.getDistance(obj1, obj2) <= colDist) {              
+        Util.ballCollisionMath(obj1, obj2);    // Physics calculation
+
+        // Track first ball hit for foul detection
+        if (obj1 instanceof CueBall && !this.firstBallHit && !obj1.ballInHand) {
+          this.firstBallHit = obj2;          
+        }
+      } 
+    }
+  }   
+}
+
+// Ball-to-wall collision detection  
+detectWallCollisions() {
+  for (let i = 0; i < 16; i++) {
+    let ball = this.balls[i];      
+    if (!ball.onTable && ball.isStationary) continue
+
+    let bx = ball.pos[0], by = ball.pos[1];
+
+    for (let j = 0; j < 18; j++) {
+      let wall = this.walls[j];
+      let wx1 = wall.x1, wx2 = wall.x2, wy1 = wall.y1, wy2 = wall.y2;
+
+      // Find closest point on wall line segment
+      let wallLen = Util.getPointDistance(wx1, wy1, wx2, wy2);
+      let dot = (((bx - wx1) * (wx2 - wx1)) + ((by - wy1) * (wy2 - wy1))) / Math.pow(wallLen, 2);
+      let closestX = wx1 + (dot * (wx2 - wx1));        
+      let closestY = wy1 + (dot * (wy2 - wy1));        
+
+      // Ensure closest point is on the line segment
+      if (!wall.isPointCollide(closestX, closestY)) continue;
+
+      let distance = Util.getPointDistance(bx, by, closestX, closestY);
+
+      if (distance <= ball.radius) {    
+        ball.collideEdge(wall);
+      }                
+    }
+  }
+}</code></pre>
+
+    <h2>4. 🕳️ Pocket Detection Logic</h2>
+    <p>Checks for balls entering pockets and handles game state:</p>
+    <pre><code>detectPocketed() {
+  for (let i = 0; i < 16; i++) {
+    let ball = this.balls[i];      
+    if (!ball.onTable && ball.isStationary) continue;
+    if (ball instanceof CueBall && ball.ballInHand) continue
+
+    for (let j = 0; j < 6; j++) {
+      let pocket = this.pockets[j];
+      let r = pocket.radius;
+
+      let dist = Util.getPointDistance(ball.pos[0], ball.pos[1], pocket.x, pocket.y);    
+
+      if (dist <= r) {          
+        ball.sink();                    // Start sinking animation
+        if (ball.type === 'solid' || ball.type === 'stripe') {
+          this.table.pocketed.push(ball); // Track for display
+        }
+        if (!this.pocketed && ball.type !== 'white') {            
+          this.pocketed = ball;         // Track last pocketed
+        }
+        if (ball instanceof CueBall && !ball.ballInHand) {
+          this.scratched = true;        // Cue ball in pocket = scratch
+        }
+      }
+    }
+  }
+}</code></pre>
+
+    <h2>5. 🎯 Stick & Power System</h2>
+    <p>Located in <code>src/stick.js</code> and <code>src/cue_ball.js</code>:</p>
+    <pre><code>// Stick class handles visual cue stick
+class Stick {
+  constructor() {    
+    this.img = new Image();
+    this.img.src = 'src/assets/images/cue.png';
+    this.visible = true;    
+    this.rotating = true;               // Whether stick follows mouse
+    this.shooting = false;
+
+    this.canvas = document.getElementById("table");
+    this.canvas.addEventListener("mousemove", e => {
+      if (this.rotating) {      
+        [this.mouseX, this.mouseY] = Util.getCursorPos(e);
+      }
+    })
+  }
+
+  draw(ctx, cue) {
+    let dist = 20 + (cue.power * 2);    // Distance from cue ball
+
+    if (this.visible) {  
+      let x = cue.pos[0], y = cue.pos[1];
+      let offset = cue.radius / 2 + 3;
+      let opposite = this.mouseY - y;
+      let adjacent = this.mouseX - x;    
+      
+      ctx.save();
+      ctx.translate(x, y);        
+      ctx.rotate(Math.atan2((opposite) * -1, adjacent * -1));    
+      ctx.translate(-x, -y);        
+      ctx.drawImage(this.img, x + dist, y - offset);
+      ctx.restore(); 
+    }      
+  }
+}</code></pre>
+
+    <p>Cue ball power system:</p>
+    <pre><code>calcHit(e, callback) { 
+  let [x, y] = Util.getCursorPos(e);                    
+  let cx = this.pos[0], cy = this.pos[1];
+  let dist = Util.getPointDistance(x, y, cx, cy);  
+  let vec = [(x - cx) / dist, (y - cy) / dist]      
+  
+  this.holdMouseForPower( (power) => {
+    let vel = [vec[0] * power, vec[1] * power]     
+    this.hitCue(vel, callback);          
+  });
+}
+
+holdMouseForPower(callback) {   
+  let increasing = true; 
+  const minPower = 1, maxPower = 40, increment = 2;   
+  
+  const powerCounter = () => {
+    const interval = setInterval(() => {
+      if (this.power <= maxPower && increasing) {
+        this.power += increment;
+      } else {
+        increasing = false;
+      }
+      
+      if (this.power >= minPower && !increasing) {
+        this.power -= increment;
+      } else {
+        increasing = true;  
+      }
+    }, 50);      
+    
+    const clearCounter = () => {
+      clearInterval(interval);
+      this.canvas.removeEventListener("mousedown", powerCounter);
+      callback(this.power);
+      this.power = 1;
+    }
+   
+    this.canvas.addEventListener("mouseup", clearCounter, {once: true});     
+  }
+  this.canvas.addEventListener("mousedown", powerCounter);
+}</code></pre>
+
+    <h2>6. 🏁 Game State Management</h2>
+    <p>Player turn tracking and game state updates:</p>
+    <pre><code>updateTracker() {
+  const p = document.querySelector(".tracker");
+  if (!this.over) {
+    const player = this.currentPlayer.num;
+    const turn = this.currentPlayer.ballType;      
+    
+    if (turn === null) {
+      p.innerHTML = `It is Player ${player}'s turn! Open table!`
+    } else if (this.currentPlayer.lastBall) {
+      p.innerHTML = `It is Player ${player}'s turn! Sink the 8 to win!`
+    } else {
+      p.innerHTML = `It is Player ${player}'s turn! You are ${turn}.`
+    }
+  }
+}
+
+assignType(type) {
+  // Assign solids/stripes to players
+  if (type === 'solid') {
+    this.currentPlayer.ballType = 'solid';
+    this.otherPlayer.ballType = 'stripe';
+  } else if (type === 'stripe') {
+    this.currentPlayer.ballType = 'stripe';
+    this.otherPlayer.ballType = 'solid';
+  }
+}
+
+switchTurn() {
+  this.players.reverse();
+  this.currentPlayer = this.players[0];    
+  this.otherPlayer = this.players[1];
+}</code></pre>
+
+    <h2>7. ⚡ Physics Implementation Details</h2>
+    <p>The Util.ballCollisionMath function implements realistic physics:</p>
+    <pre><code>ballCollisionMath: function(obj1, obj2) {
+  // Calculate collision vector
+  let vCollision = {x: obj2.pos[0] - obj1.pos[0], y: obj2.pos[1] - obj1.pos[1]};
+  let distance = Math.sqrt((obj2.pos[0]-obj1.pos[0])*(obj2.pos[0]-obj1.pos[0]) + 
+                         (obj2.pos[1]-obj1.pos[1])*(obj2.pos[1]-obj1.pos[1]));
+  
+  // Normalize collision vector
+  let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+  
+  // Calculate relative velocity
+  let vRelativeVelocity = {x: obj1.vel[0] - obj2.vel[0], y: obj1.vel[1] - obj2.vel[1]};
+  
+  // Calculate speed along collision normal
+  let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+
+  if (speed < 0) return;  // Objects moving apart
+
+  // Apply impulse to both objects (conservation of momentum)
+  obj1.vel[0] -= (speed * vCollisionNorm.x);
+  obj1.vel[1] -= (speed * vCollisionNorm.y);
+  obj2.vel[0] += (speed * vCollisionNorm.x);
+  obj2.vel[1] += (speed * vCollisionNorm.y);
+}</code></pre>
+
+    <h2>🏗️ Physics Engine Architecture</h2>
+    <p>Key design principles:</p>
+    <ul>
+        <li><strong>Fixed time step</strong>: Physics updates use consistent timeDelta</li>
+        <li><strong>Velocity decay</strong>: Friction applied each frame (vel *= 0.994)</li>
+        <li><strong>Collision priority</strong>: Ball-ball, then ball-wall, then pocket checks</li>
+        <li><strong>Event ordering</strong>: First ball hit tracked before any pocketing</li>
+        <li><strong>Boundary handling</strong>: Balls reset to random position when off-table</li>
+        <li><strong>Conservation laws</strong>: Momentum preserved in collisions</li>
+    </ul>
+</body>
+
+</html>

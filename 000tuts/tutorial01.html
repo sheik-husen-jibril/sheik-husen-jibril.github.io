@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 1: Game Model - JavaScript Objects & Class Structure</title>
+    <link rel="stylesheet" href="tutorial01.css">
+</head>
+
+<body>
+    <h1>🎱 GitHub Billiards Game: Model Structure</h1>
+    <p>This tutorial explains the core JavaScript classes that make up the billiards game model.</p>
+
+    <h2>1. 🔵 Ball Class Foundation</h2>
+    <p>Located in <code>src/ball.js</code>, this is the base class for all billiard balls:</p>
+    <pre><code>const RADIUS = 15;
+
+class Ball {
+  constructor(num) {
+    this.num = num;                    // Ball number (0-15)
+    this.type = this.getType(num);     // "white", "solid", "stripe", or "eight"
+    this.radius = RADIUS;              // 15 pixels
+    this.size = this.radius * 2;       // Diameter for drawing
+    this.pos = [0, 0];                 // Position as [x, y] array
+    this.vel = [0, 0];                 // Velocity as [x, y] array
+    this.wallCollided = false;         // Prevents sticking to walls
+    this.onTable = true;               // Whether ball is on table
+    this.sinking = false;              // Whether ball is sinking into pocket
+    
+    this.img = new Image();            // Visual representation
+    this.img.src = `src/assets/images/ball_${this.num}.png`
+  }
+
+  isStationary() {
+    return (this.vel[0] === 0 && this.vel[1] === 0);
+  }
+  
+  resetBall() {
+    this.vel[0] = 0;
+    this.vel[1] = 0;
+    this.size = this.radius * 2;
+    this.onTable = true;
+    this.sinking = false;
+  }
+
+  getType(num) {
+    if (num === 0) return "white"
+    else if (num < 8) return "solid";
+    else if (num > 8) return "stripe";
+    else if (num === 8) return "eight"
+  }
+}</code></pre>
+
+    <p>Key properties and methods:</p>
+    <ul>
+        <li><strong>pos</strong>: Position using [x, y] array instead of object</li>
+        <li><strong>vel</strong>: Velocity vector using [x, y] array</li>
+        <li><strong>radius</strong>: Fixed at 15 pixels for all balls</li>
+        <li><strong>type</strong>: Categorizes balls by 8-ball rules</li>
+        <li><strong>onTable</strong>: Tracks whether ball is active</li>
+        <li><strong>img</strong>: Loads appropriate ball image from assets</li>
+    </ul>
+
+    <h2>2. 🎱 CueBall Inheritance</h2>
+    <p>Located in <code>src/cue_ball.js</code>, extends Ball with player-specific functionality:</p>
+    <pre><code>class CueBall extends Ball {
+  constructor() {
+    super(0);                          // White ball (number 0)
+    
+    this.ballInHand = true;            // Can be moved freely
+    this.behindTheLine = true;         // Restricted movement area
+    this.canBeHit = false;             // Whether stick can hit it
+    this.power = 1;                    // Shot power (1-40)
+    
+    // Canvas context for drawing
+    this.canvas = document.getElementById("table");
+    this.ctx = this.canvas.getContext('2d');
+  }</code></pre>
+
+    <p>Additional methods for player interaction:</p>
+    <ul>
+        <li><strong>handleBallInHand()</strong>: Manages ball placement when in hand</li>
+        <li><strong>calcHit()</strong>: Calculates shot direction and power</li>
+        <li><strong>holdMouseForPower()</strong>: Power meter implementation</li>
+        <li><strong>hitCue()</strong>: Applies velocity to cue ball</li>
+        <li><strong>handleScratch()</strong>: Reset after scratching (hitting wrong ball)</li>
+    </ul>
+
+    <h2>3. 🏟️ Table & Boundaries</h2>
+    <p>Located in <code>src/table.js</code>, manages the entire game environment:</p>
+    <pre><code>class Table {
+  constructor(canvas, ctx) {
+    this.ctx = ctx;
+    this.balls = this.generateBalls();    // Create all 16 balls
+    this.walls = this.generateWalls();    // Create boundary walls
+    this.pockets = this.generatePockets(); // Create 6 pockets
+    this.pocketed = [];                   // Track sunk balls
+    
+    this.width = canvas.width;            // 1200 pixels
+    this.height = this.width / 2;         // 600 pixels
+  }
+
+  generateBalls() {
+    const balls = [];
+    for(let i = 0; i <= 15; i++) {
+      if (i === 0) {
+        balls.push(new CueBall());        // First ball is cue ball
+      } else {
+        balls.push(new Ball(i));          // Numbered balls 1-15
+      }
+    }
+    return balls;
+  }</code></pre>
+
+    <p>Table responsibilities:</p>
+    <ul>
+        <li>Creates and positions all 16 balls in triangular formation</li>
+        <li>Generates 18 walls (boundaries + pocket edges)</li>
+        <li>Creates 6 pockets at table corners and sides</li>
+        <li>Manages visual display of pocketed balls</li>
+        <li>Handles table reset functionality</li>
+    </ul>
+
+    <h2>4. 🎯 Pocket & Wall Collision</h2>
+    <p>Located in <code>src/pocket.js</code> and <code>src/wall.js</code>:</p>
+    <pre><code>// Pocket class
+class Pocket {
+  constructor(x, y) {
+    this.radius = 28;                   // Larger than ball radius
+    this.x = x;
+    this.y = y;
+  }
+  
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "red";
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+// Wall class  
+class Wall {
+  constructor(x1, y1, x2, y2, type, location) {
+    this.x1 = x1; this.x2 = x2;        // Start and end coordinates
+    this.y1 = y1; this.y2 = y2;
+    this.type = type;                   // 'horizontal', 'vertical', '1-diag', '2-diag'
+    this.location = location;           // 'top', 'bottom', 'left', 'right'
+  }
+
+  isPointCollide(x, y) {
+    // Check if point lies on wall line segment
+    let dist1 = Util.getPointDistance(this.x1, this.y1, x, y);
+    let dist2 = Util.getPointDistance(this.x2, this.y2, x, y);
+    let wallLength = Util.getPointDistance(this.x1, this.y1, this.x2, this.y2);
+    
+    let buffer = 0.2;
+    return dist1 + dist2 >= wallLength - buffer && 
+           dist1 + dist2 <= wallLength + buffer;
+  }
+}</code></pre>
+
+    <h2>5. 🏆 Player Management</h2>
+    <p>Located in <code>src/player.js</code>, simple but effective:</p>
+    <pre><code>class Player {
+  constructor(num) {
+    this.num = num;                    // Player 1 or 2
+    this.ballType = null;              // "solid" or "stripe" 
+    this.lastBall = false;             // Whether 8-ball is last
+  }
+}</code></pre>
+
+    <p>Player system features:</p>
+    <ul>
+        <li>Tracks which player type (solids/stripes) each player controls</li>
+        <li>Manages turn switching between players</li>
+        <li>Handles end-game conditions (8-ball pocketed)</li>
+        <li>Simple but extensible design</li>
+    </ul>
+
+    <h2>6. 🔧 Utility Functions</h2>
+    <p>Located in <code>src/util.js</code>, provides essential math operations:</p>
+    <pre><code>const Util = {
+  getDistance: function(b1, b2) {
+    // Calculate distance between two balls
+    let x1 = b1.pos[0], x2 = b2.pos[0];
+    let y1 = b1.pos[1], y2 = b1.pos[1];
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+  },
+  
+  ballCollisionMath: function(obj1, obj2) {
+    // Physics calculation for ball-to-ball collisions
+    let vCollision = {x: obj2.pos[0] - obj1.pos[0], y: obj2.pos[1] - obj1.pos[1]};
+    let distance = Math.sqrt((obj2.pos[0]-obj1.pos[0])*(obj2.pos[0]-obj1.pos[0]) + 
+                           (obj2.pos[1]-obj1.pos[1])*(obj2.pos[1]-obj1.pos[1]));
+    let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+    let vRelativeVelocity = {x: obj1.vel[0] - obj2.vel[0], y: obj1.vel[1] - obj2.vel[1]};
+    let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+
+    if (speed < 0) return;
+
+    // Apply collision response
+    obj1.vel[0] -= (speed * vCollisionNorm.x);
+    obj1.vel[1] -= (speed * vCollisionNorm.y);
+    obj2.vel[0] += (speed * vCollisionNorm.x);
+    obj2.vel[1] += (speed * vCollisionNorm.y);
+  },
+
+  getCursorPos: function(e) {
+    // Convert mouse coordinates to canvas coordinates
+    const canvas = document.getElementById("table");
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / (rect.right - rect.left) * canvas.width
+    const y = (e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+    return [x, y];
+  },
+
+  clamp: function(val, min, max) {
+    return val > max ? max : val < min ? min : val;
+  }
+}</code></pre>
+
+    <h2>🏗️ Object Relationships</h2>
+    <p>The class hierarchy and relationships:</p>
+    <pre><code>Game
+├── Table
+│   ├── Ball[] (16 balls total)
+│   │   ├── CueBall (extends Ball)
+│   │   └── Ball (1-15 numbered balls)
+│   ├── Wall[] (18 boundary walls)
+│   ├── Pocket[] (6 pockets)
+│   └── pocketed[] (sunk balls display)
+├── Player[] (2 players)
+├── Stick (cue stick visual)
+└── Util (static utility functions)</code></pre>
+
+    <p>Key architectural decisions:</p>
+    <ul>
+        <li>Uses Node.js module.exports pattern for dependency management</li>
+        <li>Array-based position/velocity for memory efficiency</li>
+        <li>Clear separation between model (Game/Table) and view (GameView)</li>
+        <li>Static utility class for shared mathematical operations</li>
+        <li>Inheritance hierarchy for specialized ball behavior</li>
+    </ul>
+</body>
+
+</html>
