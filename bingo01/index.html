@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>150 Ball Bingo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for mobile optimization */
+        body {
+            background-color: #0d1117;
+            /* Dark background */
+            color: #c9d1d9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1rem;
+        }
+
+        .bingo-card-grid {
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            aspect-ratio: 6 / 5;
+            /* Maintain aspect ratio */
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .cell:active {
+            transform: scale(0.95);
+        }
+
+        .marked {
+            background-color: #1f6feb;
+            /* Primary blue for marked */
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(31, 111, 235, 0.5);
+            animation: pulse-marked 0.3s;
+        }
+
+        .winning {
+            background-color: #28a745;
+            /* Green for win */
+            color: #0d1117;
+            animation: tada 0.5s ease-in-out infinite alternate;
+        }
+
+        .highlighted {
+            border: 3px solid #f97316;
+            /* Orange border for drawn number match */
+            box-shadow: 0 0 15px #f97316;
+        }
+
+        @keyframes pulse-marked {
+            0% {
+                transform: scale(1.0);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1.0);
+            }
+        }
+
+        @keyframes tada {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Mobile specific adjustments (Tailwind handles most, but ensuring font size for controls) */
+        @media (max-width: 640px) {
+            .cell {
+                font-size: 1rem;
+            }
+
+            .controls button {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <script type="module">
+        // Using version 12.6.0 for app initialization
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+        // Using version 12.6.0 for Auth and Firestore for consistency
+        import {
+            getAuth,
+            signInAnonymously,
+            signInWithCustomToken,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            onSnapshot,
+            collection,
+            setLogLevel
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        // IMPORTANT: Global variables are provided by the canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // Your web app's Firebase configuration
+
+        // Inside <script type="module">...
+
+        if (typeof window.__firebase_config === 'undefined') {
+            // PASTE YOUR REAL CONFIGURATION HERE, CONVERTED TO A STRING
+            window.__firebase_config = JSON.stringify({
+                apiKey: "AIzaSyCdLnwUQ2Tr082C9IlXvdlMXDd2p8fEIJo",
+                authDomain: "bingo001-f10f9.firebaseapp.com",
+                projectId: "bingo001-f10f9",
+                storageBucket: "bingo001-f10f9.firebasestorage.app",
+                messagingSenderId: "450159384632",
+                appId: "1:450159384632:web:449d6b0b99e26345ff6ecd"
+            });
+        }
+        // ... rest of the script continues
+
+        // FIX: Parse the configuration string into a JavaScript object
+        const firebaseConfig = JSON.parse(window.__firebase_config);
+
+        // Initialize Firebase
+        // The previous error was that firebaseConfig was not defined here.
+        const app = initializeApp(firebaseConfig);
+
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId = null;
+        let gameData = {
+            cardNumbers: [],
+            drawnBalls: [],
+            markedCells: [],
+            lastDrawn: null,
+            isGameOver: false,
+        };
+
+        const GAME_DOC_PATH = `/artifacts/${appId}/users/`;
+        const COLLECTION_NAME = 'bingo_games';
+        const DOCUMENT_ID = 'game_state';
+
+        // --- Utility Functions ---
+
+        /**
+         * Converts base64 PCM data to a playable WAV Blob.
+         * Note: Required for TTS functionality, included for completeness if needed later.
+         */
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcm16, sampleRate = 24000) {
+            const numChannels = 1;
+            const bytesPerSample = 2; // 16-bit PCM
+
+            const buffer = new ArrayBuffer(44 + pcm16.length * bytesPerSample);
+            const view = new DataView(buffer);
+
+            /* RIFF identifier */
+            writeString(view, 0, 'RIFF');
+            /* file length */
+            view.setUint32(4, 36 + pcm16.length * bytesPerSample, true);
+            /* RIFF type */
+            writeString(view, 8, 'WAVE');
+            /* format chunk identifier */
+            writeString(view, 12, 'fmt ');
+            /* format chunk length */
+            view.setUint32(16, 16, true);
+            /* sample format (1 for PCM) */
+            view.setUint16(20, 1, true);
+            /* number of channels */
+            view.setUint16(22, numChannels, true);
+            /* sample rate */
+            view.setUint32(24, sampleRate, true);
+            /* byte rate (sample rate * block align) */
+            view.setUint32(28, sampleRate * numChannels * bytesPerSample, true);
+            /* block align (channels * bytes per sample) */
+            view.setUint16(32, numChannels * bytesPerSample, true);
+            /* bits per sample */
+            view.setUint16(34, bytesPerSample * 8, true);
+            /* data chunk identifier */
+            writeString(view, 36, 'data');
+            /* data chunk length */
+            view.setUint32(40, pcm16.length * bytesPerSample, true);
+
+            /* Write PCM data */
+            let offset = 44;
+            for (let i = 0; i < pcm16.length; i++, offset += bytesPerSample) {
+                view.setInt16(offset, pcm16[i], true);
+            }
+
+            return new Blob([buffer], {
+                type: 'audio/wav'
+            });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // --- Firebase/Auth Setup ---
+
+        const initFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is missing. Cannot initialize Firestore.");
+                    return;
+                }
+                // App is already initialized outside of this function: const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                setLogLevel('debug'); // Enable Firestore logging
+
+                // Sign in using provided custom token or anonymously
+                await new Promise(resolve => {
+                    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                        } else {
+                            try {
+                                if (initialAuthToken) {
+                                    await signInWithCustomToken(auth, initialAuthToken);
+                                    userId = auth.currentUser.uid;
+                                } else {
+                                    await signInAnonymously(auth);
+                                    userId = auth.currentUser.uid;
+                                }
+                            } catch (error) {
+                                console.error("Authentication failed:", error);
+                                // Fallback to a random ID if auth fails completely
+                                userId = crypto.randomUUID();
+                            }
+                        }
+                        // This updates the display element with the resulting userId
+                        document.getElementById('user-id-display').textContent = userId;
+                        unsubscribe(); // Stop listening after initial auth is resolved
+                        resolve();
+                    });
+                });
+
+                if (userId) {
+                    // Start listening for game state changes
+                    setupGameListener();
+                }
+
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in:", error);
+            }
+        };
+
+        const getGameDocRef = () => {
+            if (!db || !userId) return null;
+            const userDocPath = GAME_DOC_PATH + userId + '/' + COLLECTION_NAME;
+            return doc(collection(db, userDocPath), DOCUMENT_ID);
+        }
+
+        const setupGameListener = () => {
+            const docRef = getGameDocRef();
+            if (docRef) {
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        gameData = {
+                            cardNumbers: data.cardNumbers || [],
+                            drawnBalls: data.drawnBalls || [],
+                            markedCells: data.markedCells || [],
+                            lastDrawn: data.lastDrawn || null,
+                            isGameOver: data.isGameOver || false,
+                        };
+                        console.log("Game state loaded:", gameData);
+                    } else {
+                        console.log("No existing game state. Starting new game.");
+                        newGame();
+                    }
+                    renderGame();
+                }, (error) => {
+                    console.error("Error listening to game state:", error);
+                });
+            }
+        };
+
+        const saveGame = async () => {
+            const docRef = getGameDocRef();
+            if (docRef) {
+                try {
+                    // Use setDoc to create or overwrite the single game state document
+                    await setDoc(docRef, gameData, {
+                        merge: true
+                    });
+                    console.log("Game state saved successfully.");
+                } catch (error) {
+                    console.error("Error saving game state:", error);
+                }
+            }
+        };
+
+        // --- Game Logic ---
+
+        /**
+         * Generates a unique set of 30 numbers from 1 to 150 for the 6x5 card.
+         * @returns {number[]} Array of 30 unique numbers.
+         */
+        const generateCardNumbers = () => {
+            const allNumbers = Array.from({
+                length: 150
+            }, (_, i) => i + 1);
+            // Shuffle the array
+            for (let i = allNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allNumbers[i], allNumbers[j]] = [allNumbers[j], allNumbers[i]];
+            }
+            // Take the first 30 numbers
+            return allNumbers.slice(0, 30);
+        };
+
+        /**
+         * Starts a brand new game, generating a new card and resetting drawn numbers.
+         */
+        window.newGame = () => {
+            gameData = {
+                cardNumbers: generateCardNumbers(),
+                drawnBalls: [],
+                markedCells: Array(30).fill(false),
+                lastDrawn: null,
+                isGameOver: false,
+            };
+            saveGame(); // Save initial state
+            renderGame();
+            showModal("Game Reset", "A new 6x5 Bingo card has been generated. Good luck!");
+        };
+
+        /**
+         * Draws a single unique ball from 1 to 150.
+         */
+        window.drawBall = () => {
+            if (gameData.isGameOver) {
+                showModal("Game Over", "You've already won! Start a new game to play again.");
+                return;
+            }
+
+            const maxBall = 150;
+            if (gameData.drawnBalls.length >= maxBall) {
+                showModal("End of Game", "All 150 possible balls have been drawn. Start a new game.");
+                return;
+            }
+
+            let newBall;
+            do {
+                newBall = Math.floor(Math.random() * maxBall) + 1;
+            } while (gameData.drawnBalls.includes(newBall));
+
+            gameData.drawnBalls.push(newBall);
+            gameData.lastDrawn = newBall;
+            saveGame(); // Save drawn ball
+
+            // Check if the drawn number is on the card and highlight it
+            const cardIndex = gameData.cardNumbers.indexOf(newBall);
+            if (cardIndex !== -1) {
+                // If it matches a number on the card, we highlight the cell
+                const cellElement = document.getElementById(`cell-${cardIndex}`);
+                if (cellElement) {
+                    cellElement.classList.add('highlighted');
+                    setTimeout(() => {
+                        cellElement.classList.remove('highlighted');
+                    }, 2000);
+                }
+            }
+
+            renderGame();
+        };
+
+        /**
+         * Toggles the marked state of a cell and checks for a win.
+         * @param {number} index Index of the cell (0-29).
+         */
+        window.toggleMarked = (index) => {
+            if (gameData.isGameOver) return;
+
+            gameData.markedCells[index] = !gameData.markedCells[index];
+            saveGame(); // Save marked state
+            checkWin();
+        };
+
+        /**
+         * Checks for a win condition (Full Card Coverall).
+         */
+        const checkWin = () => {
+            if (gameData.isGameOver) return;
+
+            // Full Card Coverall: All 30 cells must be marked AND their numbers must have been drawn.
+            const allCellsMarked = gameData.markedCells.every(isMarked => isMarked);
+
+            if (allCellsMarked) {
+                const allNumbersDrawnAndMarked = gameData.cardNumbers.every((number, index) => {
+                    return gameData.markedCells[index] && gameData.drawnBalls.includes(number);
+                });
+
+                if (allNumbersDrawnAndMarked) {
+                    gameData.isGameOver = true;
+                    saveGame();
+                    renderGame(); // Rerender to show winning style
+                    showModal("BINGO!!!", "Full Card Coverall! Congratulations, you won 150-Ball Bingo!");
+                }
+            }
+        };
+
+        // --- Rendering & UI ---
+
+        /**
+         * Renders the entire game state to the DOM.
+         */
+        const renderGame = () => {
+            const cardContainer = document.getElementById('bingo-card');
+            const lastDrawnDisplay = document.getElementById('last-drawn-ball');
+            const drawnList = document.getElementById('drawn-list');
+            const drawButton = document.getElementById('draw-ball-btn');
+            const drawnCountDisplay = document.getElementById('drawn-count'); // Get drawn count element
+
+            // 1. Render Card
+            cardContainer.innerHTML = '';
+            gameData.cardNumbers.forEach((number, index) => {
+                const cell = document.createElement('div');
+                cell.id = `cell-${index}`;
+
+                cell.className = `cell rounded-lg shadow-inner 
+${gameData.isGameOver ? 'winning' : ''} ${gameData.markedCells[index] ?
+                        'marked' : 'bg-gray-800 hover:bg-gray-700'}`;
+                cell.textContent = number;
+                cell.onclick = () => window.toggleMarked(index);
+                cardContainer.appendChild(cell);
+            });
+
+            // 2. Render Last Drawn Ball
+            if (gameData.lastDrawn !== null) {
+                lastDrawnDisplay.textContent = gameData.lastDrawn;
+                lastDrawnDisplay.classList.remove('opacity-0');
+            } else {
+                lastDrawnDisplay.textContent = '--';
+                lastDrawnDisplay.classList.add('opacity-0');
+            }
+
+            // 3. Update Drawn Count
+            if (drawnCountDisplay) {
+                drawnCountDisplay.textContent = gameData.drawnBalls.length;
+            }
+
+
+            // 4. Render Drawn List
+            drawnList.innerHTML = '';
+            const ballsToShow = gameData.drawnBalls.slice(-20).reverse(); // Show last 20 drawn balls
+            if (gameData.drawnBalls.length === 0) {
+                const noBalls = document.createElement('p');
+                noBalls.className = 'text-gray-400 text-sm';
+                noBalls.textContent = 'No balls drawn yet.';
+                drawnList.appendChild(noBalls);
+            } else {
+                ballsToShow.forEach(ball => {
+                    const item = document.createElement('span');
+                    item.className = 'inline-flex items-center justify-center p-2 rounded-full text-xs font-medium';
+
+                    // Highlight if the drawn ball is on the player's card
+                    if (gameData.cardNumbers.includes(ball)) {
+                        item.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'ring-2', 'ring-blue-400');
+                    } else {
+                        item.classList.add('bg-gray-700', 'text-gray-300');
+                    }
+
+                    // Highlight the most recently drawn ball
+                    if (ball === gameData.lastDrawn) {
+                        item.classList.add('scale-110', 'bg-orange-500', 'ring-orange-300');
+                    }
+
+                    item.textContent = ball;
+                    drawnList.appendChild(item);
+                });
+            }
+
+            // 5. Update Button State
+            if (drawButton) {
+                drawButton.disabled = gameData.isGameOver || (gameData.drawnBalls.length >= 150);
+                drawButton.classList.toggle('opacity-50', drawButton.disabled);
+            }
+        };
+
+        /**
+         * Shows a custom modal dialog.
+         * @param {string} title
+         * @param {string} message
+         */
+        const showModal = (title, message) => {
+            const modal = document.getElementById('game-modal');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        /**
+         * Closes the custom modal dialog.
+         */
+        window.closeModal = () => {
+            const modal = document.getElementById('game-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // Initialize Firebase and Auth on load
+        window.onload = initFirebase;
+    </script>
+</head>
+
+<body class="p-4 sm:p-6 pb-20">
+
+    <div id="app" class="w-full max-w-sm mx-auto space-y-6">
+
+        <header class="text-center space-y-2">
+            <h1 class="text-3xl font-extrabold text-white">150 Ball Bingo</h1>
+            <p class="text-xs text-gray-500">
+                User ID: <span id="user-id-display" class="font-mono text-gray-400">Loading...</span>
+            </p>
+        </header>
+
+        <div class="bg-gray-800 p-4 rounded-xl shadow-2xl space-y-4">
+
+            <div class="flex items-center justify-center space-x-4">
+                <div class="flex flex-col items-center justify-center">
+                    <p class="text-sm font-semibold text-gray-400 uppercase">Last Drawn</p>
+                    <div id="last-drawn-ball"
+                        class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center text-4xl sm:text-5xl font-black bg-orange-500 text-white rounded-full shadow-lg transition-opacity duration-300 opacity-0">
+                        --
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls flex justify-center space-x-3 pt-2">
+                <button id="draw-ball-btn" onclick="drawBall()"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02] active:scale-95">
+                    Draw Ball
+                </button>
+                <button onclick="newGame()"
+                    class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02] active:scale-95">
+                    New Game
+                </button>
+            </div>
+        </div>
+
+        <div id="bingo-card"
+            class="bingo-card-grid grid w-full bg-gray-900 p-1 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
+        </div>
+
+        <div class="p-4 bg-gray-800 rounded-xl shadow-inner space-y-3">
+
+            <h2 class="text-lg font-semibold text-white">Last 20
+                Drawn Balls (Total: <span id="drawn-count">0</span>)
+            </h2>
+            <div id="drawn-list" class="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-1">
+                <p class="text-gray-400 text-sm">No balls drawn yet.</p>
+            </div> 
+        </div>
+    </div>
+
+    <div id="game-modal"
+        class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50 transition-opacity duration-300">
+        <div class="bg-gray-900 p-6 rounded-xl max-w-sm w-full shadow-2xl border border-gray-700">
+            <h3 id="modal-title" class="text-2xl font-bold mb-3 text-white">Title</h3>
+            <p id="modal-message" class="text-gray-300 mb-6">Message content.</p>
+            <button onclick="closeModal()"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition duration-150 transform hover:scale-[1.01]">
+                Got It
+            </button>
+        </div>
+    </div>
+
+</body>
+
+</html>
