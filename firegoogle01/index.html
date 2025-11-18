@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Google Auth Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+            display: inline-block;
+            width: 80%;
+            text-align: left;
+        }
+
+        .google-icon {
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Sign In with Google</h1>
+
+    <button onclick="loginGoogle()">
+        <img src="https://img.icons8.com/color/20/000000/google-logo.png" alt="Google logo" class="google-icon">
+        Login / Sign Up with Google
+    </button>
+
+    <button onclick="registerGoogle()" style="display: none;">
+        Register with Google (Hidden/Optional)
+    </button>
+
+    <div id="message">
+        Awaiting user action...
+    </div>
+
+    <script type="module" src="./script.js"></script>
+
+</body>
+
+</html>
