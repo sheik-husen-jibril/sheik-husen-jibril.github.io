@@ -3,10 +3,12 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   onAuthStateChanged,
   setPersistence,
   browserSessionPersistence,
+  browserLocalPersistence,
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import {
@@ -507,38 +509,39 @@ async function handleRedirectSignIn() {
 
 handleRedirectSignIn();
 
-let authChecked = false;
-
 // ... existing code ...
 
+// REMOVE: let authChecked = false;
+
 onAuthStateChanged(auth, (user) => {
-  if (!authChecked) {
-    authChecked = true;
-    const urlParams = new URLSearchParams(window.location.search);
-    const lobbyId = urlParams.get("lobbyId");
+  // REMOVE: if (!authChecked) {
+  // REMOVE: authChecked = true;
 
-    // 🎯 NEW: Check if the user is on the profile page
-    const isProfilePage = window.location.pathname.endsWith("profile.html");
+  const urlParams = new URLSearchParams(window.location.search);
+  const lobbyId = urlParams.get("lobbyId");
+  const isProfilePage = window.location.pathname.endsWith("profile.html");
 
-    if (isProfilePage) {
-      initializeProfilePage(); // Call profile logic regardless of sign-in status first
-    } else if (lobbyId) {
-      // If on lobby page
-      initializeLobby();
-    } else if (user) {
-      // If on index page and logged in
-      displayUserDetails(user);
-    } else {
-      // If on index page and logged out
-      displayLoggedOut();
-    }
+  if (isProfilePage) {
+    // Always update the profile page state
+    initializeProfilePage();
+  } else if (lobbyId) {
+    // Always update the lobby state
+    initializeLobby();
+  } else if (user) {
+    // User is definitely logged in -> Show User UI
+    displayUserDetails(user);
+  } else {
+    // User is definitely logged out -> Show Login Button
+    displayLoggedOut();
   }
+  // REMOVE: }
 });
 
 window.loginGoogle = async function () {
   try {
-    setPersistence(auth, browserSessionPersistence);
-    await signInWithRedirect(auth, googleProvider);
+    await setPersistence(auth, browserLocalPersistence);
+    //   await setPersistence(auth, browserSessionPersistence);
+    await signInWithPopup(auth, googleProvider);
   } catch (error) {
     console.error("Sign in failed:", error);
     document.getElementById("message").innerHTML =
