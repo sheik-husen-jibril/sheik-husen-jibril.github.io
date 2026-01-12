@@ -1,0 +1,1988 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Short Notes Guide - Integrating Appwrite Auth, Database, &amp; React Context API</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2e6e8f84-15bc-801d-9f2a-cafcbe987f1e" class="page sans"><header><h1 class="page-title" dir="auto">Short Notes Guide - Integrating Appwrite Auth, Database, &amp; React Context API</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="2e6e8f84-15bc-800b-a23a-d7731db3130a" class="">Guide to Integrating Appwrite Authentication, Database, and React Context API</h1></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80d8-b1c3-f64ceab985b3" class="">This guide details integrating Appwrite for authentication and database with React&#x27;s Context API for global state. It covers a profile page and a &quot;watch list&quot; for movies, TV shows, seasons, and episodes.</p></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-8048-860b-f70c68c1ae2d"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-803b-8caf-f70af19f3035" class="">Table of Contents</h2></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-801f-8cdc-f24f6cbc417a" class="numbered-list" start="1"><li><strong>Setting up Appwrite Project</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-802b-b91f-f4635187236b" class="bulleted-list"><li style="list-style-type:disc">1.1. Creating a New Appwrite Project</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80b9-bbad-cbbf9d1a2e7f" class="bulleted-list"><li style="list-style-type:disc">1.2. Configuring Platforms</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80b5-9674-c92637f1ef99" class="bulleted-list"><li style="list-style-type:disc">1.3. Creating Authentication</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8066-8279-f476a74bbdd9" class="bulleted-list"><li style="list-style-type:disc">1.4. Creating Database and Collections</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-800a-9747-d6d0b2caafa0" class="numbered-list" start="2"><li><strong>Integrating Appwrite SDK in React Native</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80cc-ad1a-f534dd3ec43c" class="bulleted-list"><li style="list-style-type:disc">2.1. Installation</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-808e-97f8-d44b0d0db20f" class="bulleted-list"><li style="list-style-type:disc">2.2. Appwrite Client Initialization</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80f4-8d82-f8103f859833" class="bulleted-list"><li style="list-style-type:disc">2.3. Project Structure for Appwrite Services</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80ec-ac28-cb2fe4ea2a40" class="numbered-list" start="3"><li><strong>Implementing Appwrite Authentication</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80bc-82d0-e4dc92c4dd50" class="bulleted-list"><li style="list-style-type:disc">3.1. User Registration (Sign Up)</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80a7-b500-d2c866daa221" class="bulleted-list"><li style="list-style-type:disc">3.2. User Login (Sign In)</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8063-a7b5-c7af474d8096" class="bulleted-list"><li style="list-style-type:disc">3.3. Getting Current User Session</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8057-96da-dd70c9304a2d" class="bulleted-list"><li style="list-style-type:disc">3.4. User Logout</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80b2-b78d-c9a7a2ba139d" class="bulleted-list"><li style="list-style-type:disc">3.5. Handling Authentication State (Loading, Errors)</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8041-86da-fb7f06e969e6" class="numbered-list" start="4"><li><strong>Implementing Appwrite Database for Watchlist</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80ce-9736-d62611e8572c" class="bulleted-list"><li style="list-style-type:disc">4.1. Creating Watchlist Collection</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-801a-bf3f-dcd7e8d30d39" class="bulleted-list"><li style="list-style-type:disc">4.2. Adding a Movie to Watchlist</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-808f-bce1-df3b8ae75b85" class="bulleted-list"><li style="list-style-type:disc">4.3. Removing a Movie from Watchlist</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8007-8f2c-d5eac28394f6" class="bulleted-list"><li style="list-style-type:disc">4.4. Fetching User&#x27;s Watchlist</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8038-9da0-f0181fa9438c" class="bulleted-list"><li style="list-style-type:disc">4.5. Checking if a Movie is in Watchlist</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80f6-a73d-fea38d859f18" class="numbered-list" start="5"><li><strong>React Context API for Global State Management</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80ae-bfea-d9445ff20a00" class="bulleted-list"><li style="list-style-type:disc">5.1. Understanding Context API</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80b3-a445-d34cbab28c8e" class="bulleted-list"><li style="list-style-type:disc">5.2. Creating an Auth Context</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-807b-9b3d-c0f7df2ec599" class="bulleted-list"><li style="list-style-type:disc">5.3. Creating a Watchlist Context</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-805a-b2e5-c3dfb5b3054c" class="bulleted-list"><li style="list-style-type:disc">5.4. Combining Context Providers</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80f8-8baf-f541f6e06ad7" class="numbered-list" start="6"><li><strong>Integrating into UI Components and Screens</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80c9-b267-e68a45c9f3cd" class="bulleted-list"><li style="list-style-type:disc">6.1. Updating Navigation (Conditional Rendering based on Auth)</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-803f-b8cc-dd02e14d070c" class="bulleted-list"><li style="list-style-type:disc">6.2. Creating a Profile Screen</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-809a-a0bf-db1cb68554bf" class="bulleted-list"><li style="list-style-type:disc">6.3. Integrating Watchlist Functionality into Movie Details</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8046-b981-c6a8ccfbde31" class="bulleted-list"><li style="list-style-type:disc">6.4. Integrating Watchlist into MoviesScreen</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-808b-93e8-e8d8959f8fbb" class="bulleted-list"><li style="list-style-type:disc">6.5. Displaying Watchlist on WatchListScreen</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8098-971b-e6307db8ace6" class="numbered-list" start="7"><li><strong>Final Thoughts and Best Practices</strong></li></ol></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-80c2-891e-faa2dd6e8789"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-8041-8040-c95cb3e1fb32" class="">1. Setting up Appwrite Project</h2></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80ab-b229-d959d014a744" class="">Set up your Appwrite backend before coding.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-801a-8911-c179b4cb8f5f" class="">1.1. Creating a New Appwrite Project</h3></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8087-81a9-ee49aa28f465" class="numbered-list" start="1"><li><strong>Install Appwrite:</strong> Install Appwrite (see <a href="https://appwrite.io/docs/installation">https://appwrite.io/docs/installation</a>).</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80f5-92e5-d2424ef7edd1" class="numbered-list" start="2"><li><strong>Access Console:</strong> Open your Appwrite console (e.g., <code>http://localhost</code>).</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8038-a41c-e7a3750fcfb1" class="numbered-list" start="3"><li><strong>Create Project:</strong> Create a project (e.g., &quot;MovieListingApp&quot;). Note its <strong>Project ID</strong>.</li></ol></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80de-8549-df4c03db586b" class="">1.2. Configuring Platforms</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8077-b3a4-d9d2672a1f6d" class="">Inform Appwrite about connecting platforms.</p></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-803e-ad8b-de130c9dc481" class="numbered-list" start="1"><li><strong>Add Platform:</strong> Go to &quot;Overview&quot; -&gt; &quot;Add Platform&quot;.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80a9-913b-fafba5748cfc" class="numbered-list" start="2"><li><strong>Select &quot;Flutter App&quot; or &quot;React Native App&quot;:</strong> Choose &quot;Flutter App&quot; or a generic &quot;Client&quot; for React Native.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80d4-88b0-dbb18fc9fa77" class="numbered-list" start="3"><li><strong>Enter Application ID:</strong> Use your React Native app&#x27;s package name (e.g., <code>com.yourcompany.movielisting</code>), found in <code>app.json</code> or <code>package.json</code>.</li></ol></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80ac-b962-f1c4f9c1742a" class="">1.3. Creating Authentication</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8076-8131-d5dbd423f2b6" class="">Appwrite handles user authentication.</p></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80c0-924d-ceff06f23b2d" class="numbered-list" start="1"><li><strong>Users:</strong> Find registered users under &quot;Auth&quot; -&gt; &quot;Users&quot; in the console.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80ef-8483-f9972c235cb9" class="numbered-list" start="2"><li><strong>Settings:</strong> Configure authentication options (e.g., email verification, password policies, OAuth) in &quot;Auth&quot; -&gt; &quot;Settings&quot;. Email/password is the current focus.</li></ol></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8056-8d6d-d98744058008" class="">1.4. Creating Database and Collections</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-800f-a084-d29ad2af9a00" class="">Appwrite Database stores user watchlists.</p></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8004-8822-f33746194f28" class="numbered-list" start="1"><li><strong>Create Database:</strong> Go to &quot;Database&quot;, &quot;Create Database&quot; (e.g., &quot;MovieData&quot;). Note <strong>Database ID</strong>.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8072-8d01-e78ff7529a4b" class="numbered-list" start="2"><li><strong>Create Collection (Watchlist):</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8074-b79e-d1873e1e0771" class="bulleted-list"><li style="list-style-type:disc">In the database, &quot;Create Collection&quot;, name it &quot;Watchlist&quot;. Note <strong>Collection ID</strong>.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-808d-af49-e1cc5642b70b" class="bulleted-list"><li style="list-style-type:disc"><strong>Permissions:</strong> Crucial.<div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80a6-a7d1-cc7f59d78fe6" class="bulleted-list"><li style="list-style-type:circle"><strong>Read/Write Access:</strong> Grant &quot;Document Permissions&quot; to &quot;users&quot;.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80e1-86ae-ec1cf6592589" class="bulleted-list"><li style="list-style-type:circle"><em>Important:</em> For &quot;Watchlist&quot; collection, set &quot;Permissions&quot; to allow &quot;create&quot;, &quot;read&quot;, &quot;update&quot;, &quot;delete&quot; for <code>users</code>. Document-level permissions in code will restrict users to <em>their own</em> items.</li></ul></div></li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-8029-abbd-c9a456716d7f" class="numbered-list" start="3"><li><strong>Add Attributes to Watchlist Collection:</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80c3-92ac-fee25f5cd813" class="bulleted-list"><li style="list-style-type:disc">In &quot;Watchlist&quot; collection, go to &quot;Attributes&quot;.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80a6-8000-c6b2f1beec32" class="bulleted-list"><li style="list-style-type:disc">Add:<div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80e1-b6a3-e392a15e4487" class="bulleted-list"><li style="list-style-type:circle"><code>userId</code>: <code>String</code>, <code>true</code> (Links to user).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-809c-aa46-f7ad652ec6d8" class="bulleted-list"><li style="list-style-type:circle"><code>itemId</code>: <code>String</code>, <code>true</code> (Unique ID: movie, TV show, season, episode).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8099-ad7c-dbe9c10b5119" class="bulleted-list"><li style="list-style-type:circle"><code>itemTitle</code>: <code>String</code>, <code>true</code> (Title: movie, TV show, season, episode).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8066-b334-d316b2d6cfe5" class="bulleted-list"><li style="list-style-type:circle"><code>itemPosterPath</code>: <code>String</code>, <code>false</code> (Poster/thumbnail URL).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80f5-a654-c0dfb6560f09" class="bulleted-list"><li style="list-style-type:circle"><code>itemReleaseDate</code>: <code>String</code>, <code>false</code> (Release/air date).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8017-accb-c0a4ccab946a" class="bulleted-list"><li style="list-style-type:circle"><code>mediaType</code>: <code>String</code>, <code>true</code> (e.g., &#x27;movie&#x27;, &#x27;tv&#x27;, &#x27;season&#x27;, &#x27;episode&#x27;).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8087-ab16-c40805477ed9" class="bulleted-list"><li style="list-style-type:circle"><code>parentItemId</code>: <code>String</code>, <code>false</code> (Parent ID for season/episode).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8063-a6c8-fbb34a4fd759" class="bulleted-list"><li style="list-style-type:circle"><code>seasonNumber</code>: <code>Integer</code>, <code>false</code> (Season number).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-804b-a74c-cd0ef41b82d9" class="bulleted-list"><li style="list-style-type:circle"><code>episodeNumber</code>: <code>Integer</code>, <code>false</code> (Episode number).</li></ul></div></li></ul></div></li></ol></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-8086-adb8-ece33e4bf41c"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-8009-bf4d-c4619605fde1" class="">2. Integrating Appwrite SDK in React Native</h2></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8082-87b3-f46017a6ed38" class="">Prepare your React Native app for Appwrite communication.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80de-9bf0-eac9ab4cdbe8" class="">2.1. Installation</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-803d-91de-efac86777f8a" class="">Install the Appwrite SDK in your project root:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8059-a118-dee941bf8bc7" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">npm install appwrite
+# or
+yarn add appwrite
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80cb-978d-ec21f67fb278" class="">2.2. Appwrite Client Initialization</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-800c-b779-c6f13d1fa4a6" class="">Create an Appwrite client configuration file.</p></div><div style="display:contents" dir="auto"><ol type="1" id="2e6e8f84-15bc-80df-8a2f-d3447001a850" class="numbered-list" start="1"><li><strong>Create </strong><code><strong>src/api/appwrite.js</strong></code><strong>:</strong><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-803f-b1b0-c4863ae39057" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/api/appwrite.js
+import { Client, Account, Databases } from &#x27;appwrite&#x27;;
+
+export const appwriteConfig = {
+  endpoint: process.env.APPWRITE_ENDPOINT || &#x27;YOUR_APPWRITE_ENDPOINT&#x27;, // e.g., &#x27;&lt;http://localhost/v1&gt;&#x27;
+  projectId: process.env.APPWRITE_PROJECT_ID || &#x27;YOUR_APPWRITE_PROJECT_ID&#x27;,
+  databaseId: process.env.APPWRITE_DATABASE_ID || &#x27;YOUR_APPWRITE_DATABASE_ID&#x27;,
+  watchlistCollectionId: process.env.APPWRITE_WATCHLIST_COLLECTION_ID || &#x27;YOUR_APPWRITE_WATCHLIST_COLLECTION_ID&#x27;,
+};
+
+const client = new Client()
+  .setEndpoint(appwriteConfig.endpoint)
+  .setProject(appwriteConfig.projectId);
+
+const account = new Account(client);
+const databases = new Databases(client);
+
+export { client, account, databases };
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80e5-b8b9-f411f2152b93" class=""><strong>Note:</strong> Replace placeholders with your Appwrite console values. Use environment variables (<code>process.env.APPWRITE_...</code>) for security.</p></div></li></ol></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8083-a4b7-ef2b0c205b12" class="">2.3. Project Structure for Appwrite Services</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8034-bf71-ee0fa913d166" class="">Organize your <code>src/</code> directory for new Appwrite services and context.</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80b4-b94b-de19819a881e" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+src/
+├── api/
+│   ├── apiClient.js
+│   ├── apiConfig.js
+│   └── appwrite.js        &lt;-- New Appwrite client
+├── auth/                  &lt;-- New Appwrite auth logic
+│   └── authService.js
+├── components/
+├── context/               &lt;-- New React Context API providers
+│   ├── AuthContext.js
+│   └── WatchlistContext.js
+├── database/              &lt;-- New Appwrite database logic
+│   └── watchlistService.js
+├── navigation/
+└── screens/
+    ├── HomeScreen.js
+    ├── MovieDetailsScreen.js
+    ├── MoviesScreen.js
+    ├── ProfileScreen.js   &lt;-- New User profile screen
+    ├── SearchScreen.js
+    ├── TvShowDetailsScreen.js
+    ├── TVShowsScreen.js
+    ├── WatchListScreen.js
+    ├── WatchTrailerScreen.js
+    └── WatchVideoScreen.js
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-808b-b4d5-fb1a80929875"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-80d2-a6c4-e2cbdced962e" class="">3. Implementing Appwrite Authentication</h2></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8037-bb3e-eda1bb97d36f" class="">Create a service file for Appwrite authentication logic.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8031-82af-c02f05cf90b0" class="">3.1. User Registration (Sign Up)</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80f9-a2cb-d5d2c191ce30" class="">In <code>src/auth/authService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8052-9c31-d6012e4e6b4f" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/auth/authService.js
+import { ID } from &#x27;appwrite&#x27;;
+import { account } from &#x27;../api/appwrite&#x27;; // Import the initialized account object
+
+const AuthService = {
+  async register(email, password, name) {
+    try {
+      const user = await account.create(ID.unique(), email, password, name);
+      console.log(&#x27;User registered:&#x27;, user);
+      return user;
+    } catch (error) {
+      console.error(&#x27;Registration error:&#x27;, error);
+      throw error;
+    }
+  },
+
+  // ... other auth methods
+};
+
+export default AuthService;
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-807e-ab48-ea8c3f7df6a5" class=""><strong>Example Usage (</strong><code><strong>SignUpScreen.js</strong></code><strong>):</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80f0-84bf-f83efbd262a9" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// screens/SignUpScreen.js (example)
+import React, { useState } from &#x27;react&#x27;;
+import { View, Text, TextInput, Button, Alert } from &#x27;react-native&#x27;;
+import AuthService from &#x27;../src/auth/authService&#x27;;
+
+const SignUpScreen = ({ navigation }) =&gt; {
+  const [email, setEmail] = useState(&#x27;&#x27;);
+  const [password, setPassword] = useState(&#x27;&#x27;);
+  const [name, setName] = useState(&#x27;&#x27;);
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () =&gt; {
+    if (!email || !password || !name) {
+      Alert.alert(&#x27;Error&#x27;, &#x27;Please fill all fields.&#x27;);
+      return;
+    }
+    setLoading(true);
+    try {
+      await AuthService.register(email, password, name);
+      Alert.alert(&#x27;Success&#x27;, &#x27;Account created successfully! Please log in.&#x27;);
+      navigation.navigate(&#x27;SignIn&#x27;); // Navigate to login screen
+    } catch (error) {
+      Alert.alert(&#x27;Error&#x27;, error.message || &#x27;Something went wrong during registration.&#x27;);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    &lt;View style={{ flex: 1, justifyContent: &#x27;center&#x27;, padding: 20 }}&gt;
+      &lt;Text style={{ fontSize: 24, marginBottom: 20 }}&gt;Sign Up&lt;/Text&gt;
+      &lt;TextInput
+        placeholder=&quot;Name&quot;
+        value={name}
+        onChangeText={setName}
+        style={{ borderWidth: 1, borderColor: &#x27;gray&#x27;, padding: 10, marginBottom: 10 }}
+      /&gt;
+      &lt;TextInput
+        placeholder=&quot;Email&quot;
+        value={email}
+        onChangeText={setEmail}
+        keyboardType=&quot;email-address&quot;
+        autoCapitalize=&quot;none&quot;
+        style={{ borderWidth: 1, borderColor: &#x27;gray&#x27;, padding: 10, marginBottom: 10 }}
+      /&gt;
+      &lt;TextInput
+        placeholder=&quot;Password&quot;
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={{ borderWidth: 1, borderColor: &#x27;gray&#x27;, padding: 10, marginBottom: 20 }}
+      /&gt;
+      &lt;Button title={loading ? &#x27;Signing Up...&#x27; : &#x27;Sign Up&#x27;} onPress={handleSignUp} disabled={loading} /&gt;
+      &lt;Button title=&quot;Already have an account? Sign In&quot; onPress={() =&gt; navigation.navigate(&#x27;SignIn&#x27;)} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default SignUpScreen;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80ab-b3c0-ff85ef71512d" class="">3.2. User Login (Sign In)</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80a3-b783-e11af5bfad92" class="">Add to <code>src/auth/authService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80b5-8c3a-d948bfd2eb9c" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/auth/authService.js (continued)
+// ...
+const AuthService = {
+  // ... register method
+
+  async login(email, password) {
+    try {
+      const session = await account.createEmailPasswordSession(email, password);
+      console.log(&#x27;User logged in:&#x27;, session);
+      return session;
+    } catch (error) {
+      console.error(&#x27;Login error:&#x27;, error);
+      throw error;
+    }
+  },
+
+  // ... other auth methods
+};
+
+export default AuthService;
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-803c-bb72-f553d6427d8c" class=""><strong>Example Usage (</strong><code><strong>SignInScreen.js</strong></code><strong>):</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8074-b15a-d2dba9865c1b" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// screens/SignInScreen.js (example)
+import React, { useState } from &#x27;react&#x27;;
+import { View, Text, TextInput, Button, Alert } from &#x27;react-native&#x27;;
+import AuthService from &#x27;../src/auth/authService&#x27;;
+import { useAuth } from &#x27;../src/context/AuthContext&#x27;; // We&#x27;ll create this later
+
+const SignInScreen = ({ navigation }) =&gt; {
+  const [email, setEmail] = useState(&#x27;&#x27;);
+  const [password, setPassword] = useState(&#x27;&#x27;);
+  const [loading, setLoading] = useState(false);
+  const { login: authContextLogin } = useAuth(); // Use context for global state update
+
+  const handleSignIn = async () =&gt; {
+    if (!email || !password) {
+      Alert.alert(&#x27;Error&#x27;, &#x27;Please enter email and password.&#x27;);
+      return;
+    }
+    setLoading(true);
+    try {
+      const session = await AuthService.login(email, password);
+      await authContextLogin(session); // Update global auth state
+      Alert.alert(&#x27;Success&#x27;, &#x27;Logged in successfully!&#x27;);
+      // Navigate to the main app or a protected screen
+      navigation.replace(&#x27;Home&#x27;); // Example: Replace current screen with Home
+    } catch (error) {
+      Alert.alert(&#x27;Error&#x27;, error.message || &#x27;Login failed. Please check your credentials.&#x27;);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    &lt;View style={{ flex: 1, justifyContent: &#x27;center&#x27;, padding: 20 }}&gt;
+      &lt;Text style={{ fontSize: 24, marginBottom: 20 }}&gt;Sign In&lt;/Text&gt;
+      &lt;TextInput
+        placeholder=&quot;Email&quot;
+        value={email}
+        onChangeText={setEmail}
+        keyboardType=&quot;email-address&quot;
+        autoCapitalize=&quot;none&quot;
+        style={{ borderWidth: 1, borderColor: &#x27;gray&#x27;, padding: 10, marginBottom: 10 }}
+      /&gt;
+      &lt;TextInput
+        placeholder=&quot;Password&quot;
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={{ borderWidth: 1, borderColor: &#x27;gray&#x27;, padding: 10, marginBottom: 20 }}
+      /&gt;
+      &lt;Button title={loading ? &#x27;Signing In...&#x27; : &#x27;Sign In&#x27;} onPress={handleSignIn} disabled={loading} /&gt;
+      &lt;Button title=&quot;Don&#x27;t have an account? Sign Up&quot; onPress={() =&gt; navigation.navigate(&#x27;SignUp&#x27;)} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default SignInScreen;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8048-82fd-d2ffcb0a8296" class="">3.3. Getting Current User Session</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8025-9bc5-d7fa4658eaa9" class="">Add to <code>src/auth/authService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-805b-aae0-f6aafcd3f67a" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/auth/authService.js (continued)
+// ...
+const AuthService = {
+  // ... register, login methods
+
+  async getCurrentUser() {
+    try {
+      const user = await account.get(); // Retrieves the current logged-in user
+      console.log(&#x27;Current user:&#x27;, user);
+      return user;
+    } catch (error) {
+      console.log(&#x27;No current user or session expired:&#x27;, error.message);
+      return null;
+    }
+  },
+
+  // ... other auth methods
+};
+
+export default AuthService;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8064-8648-f297c3365775" class="">3.4. User Logout</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80fd-b167-e54ec4b417bb" class="">Add to <code>src/auth/authService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-804c-882e-d3c7d963e4a5" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/auth/authService.js (continued)
+// ...
+const AuthService = {
+  // ... register, login, getCurrentUser methods
+
+  async logout() {
+    try {
+      await account.deleteSession(&#x27;current&#x27;); // Deletes the current session
+      console.log(&#x27;User logged out&#x27;);
+      return true;
+    } catch (error) {
+      console.error(&#x27;Logout error:&#x27;, error);
+      throw error;
+    }
+  },
+};
+
+export default AuthService;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80df-93e7-d1e61c9d22f5" class="">3.5. Handling Authentication State (Loading, Errors)</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80e8-97e9-d02b6a10d661" class="">Managed by <code>AuthContext</code> (created later); service functions handle API calls and errors.</p></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-80a2-a194-ca24fd589dd1"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-80cc-a2b4-cf80d495559d" class="">4. Implementing Appwrite Database for Watchlist</h2></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-800b-be00-de600637ebd3" class="">Handle logic for &quot;Watchlist&quot; collection interaction.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8011-9b5c-c4a2b8167f0c" class="">4.1. Creating Watchlist Collection (Done in Appwrite Console)</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80e2-aa38-d1775f31dc87" class="">(As in 1.4) Ensure &quot;Watchlist&quot; collection has <code>userId</code>, <code>itemId</code>, <code>itemTitle</code>, <code>itemPosterPath</code>, <code>itemReleaseDate</code>, <code>mediaType</code>, <code>parentItemId</code>, <code>seasonNumber</code>, and <code>episodeNumber</code>.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-803a-b123-dacd3c45b315" class="">4.2. Adding an Item to Watchlist</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-809d-81f7-e7df34eabe52" class="">Create <code>src/database/watchlistService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-801b-a3c9-cbda42ec0c34" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/database/watchlistService.js
+import { ID, Permission, Role } from &#x27;appwrite&#x27;;
+import { databases, appwriteConfig } from &#x27;../api/appwrite&#x27;;
+
+const WatchlistService = {
+  async addItemToWatchlist(userId, itemData) {
+    try {
+      const { itemId, itemTitle, itemPosterPath, itemReleaseDate, mediaType, parentItemId, seasonNumber, episodeNumber } = itemData;
+      const document = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.watchlistCollectionId,
+        ID.unique(),
+        {
+          userId,
+          itemId,
+          itemTitle,
+          itemPosterPath,
+          itemReleaseDate,
+          mediaType,
+          parentItemId,
+          seasonNumber,
+          episodeNumber,
+        },
+        [
+          Permission.read(Role.user(userId)),
+          Permission.write(Role.user(userId)),
+          Permission.update(Role.user(userId)),
+          Permission.delete(Role.user(userId)),
+        ]
+      );
+      console.log(&#x27;Item added to watchlist:&#x27;, document);
+      return document;
+    } catch (error) {
+      console.error(&#x27;Error adding item to watchlist:&#x27;, error);
+      throw error;
+    }
+  },
+
+  // ... other watchlist methods
+};
+
+export default WatchlistService;
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8053-bab4-e43065a79a54" class=""><strong>Permissions Explanation:</strong><br/>Document-level permissions (read, write, delete for <code>Role.user(userId)</code>) ensure users manage only their watchlist items, overriding broader collection permissions.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8083-a06c-c51f161162d4" class="">4.3. Removing an Item from Watchlist</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8046-a3f2-f46bea8e4523" class="">Add to <code>src/database/watchlistService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80f0-bd0f-de5ffd7a4832" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/database/watchlistService.js (continued)
+import { Query } from &#x27;appwrite&#x27;;
+// ...
+const WatchlistService = {
+  // ... addItemToWatchlist method
+
+  async removeItemFromWatchlist(userId, itemId, mediaType) {
+    try {
+      // First, find the document ID for the item in the user&#x27;s watchlist
+      const response = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.watchlistCollectionId,
+        [
+          Query.equal(&#x27;userId&#x27;, userId),
+          Query.equal(&#x27;itemId&#x27;, itemId),
+          Query.equal(&#x27;mediaType&#x27;, mediaType), // Important for uniqueness
+        ]
+      );
+
+      if (response.documents.length &gt; 0) {
+        const documentId = response.documents[0].$id;
+        await databases.deleteDocument(
+          appwriteConfig.databaseId,
+          appwriteConfig.watchlistCollectionId,
+          documentId
+        );
+        console.log(&#x27;Item removed from watchlist:&#x27;, documentId);
+        return true;
+      } else {
+        console.warn(&#x27;Item not found in watchlist for this user.&#x27;);
+        return false;
+      }
+    } catch (error) {
+      console.error(&#x27;Error removing item from watchlist:&#x27;, error);
+      throw error;
+    }
+  },
+
+  // ... other watchlist methods
+};
+
+export default WatchlistService;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80fe-b412-cf2159baf191" class="">4.4. Fetching User&#x27;s Watchlist</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8092-9a20-e8a7a9e6b3e2" class="">Add to <code>src/database/watchlistService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8083-9aae-c37c76d06ac5" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/database/watchlistService.js (continued)
+import { Query } from &#x27;appwrite&#x27;;
+// ...
+const WatchlistService = {
+  // ... addMovie, removeMovie methods
+
+  async getWatchlist(userId) {
+    try {
+      const response = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.watchlistCollectionId,
+        [
+          Query.equal(&#x27;userId&#x27;, userId),
+          Query.orderDesc(&#x27;$createdAt&#x27;), // Optional: order by most recently added
+        ]
+      );
+      console.log(&#x27;User watchlist:&#x27;, response.documents);
+      return response.documents;
+    } catch (error) {
+      console.error(&#x27;Error fetching watchlist:&#x27;, error);
+      throw error;
+    }
+  },
+
+  // ... other watchlist methods
+};
+
+export default WatchlistService;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8034-8e35-e06a911c673a" class="">4.5. Checking if an Item is in Watchlist</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80e9-8673-ccf62f7ada50" class="">Add to <code>src/database/watchlistService.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8079-9f6a-d2e31dc55250" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/database/watchlistService.js (continued)
+import { Query } from &#x27;appwrite&#x27;;
+// ...
+const WatchlistService = {
+  // ... addItemToWatchlist, removeItemFromWatchlist, getWatchlist methods
+
+  async isItemInWatchlist(userId, itemId, mediaType) {
+    try {
+      const response = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.watchlistCollectionId,
+        [
+          Query.equal(&#x27;userId&#x27;, userId),
+          Query.equal(&#x27;itemId&#x27;, itemId),
+          Query.equal(&#x27;mediaType&#x27;, mediaType), // Important for uniqueness
+          Query.limit(1), // We only need to know if at least one exists
+        ]
+      );
+      return response.documents.length &gt; 0;
+    } catch (error) {
+      console.error(&#x27;Error checking item in watchlist:&#x27;, error);
+      throw error;
+    }
+  },
+};
+
+export default WatchlistService;
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-8021-9189-e424750775b0"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-80d7-a147-eeac157cc2b6" class="">5. React Context API for Global State Management</h2></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8039-9a4f-cd0b8b975596" class="">Context API manages global states (auth, watchlist) without prop-drilling.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8048-941f-e549974a4b47" class="">5.1. Understanding Context API</h3></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80c8-8619-fe8478be4208" class="bulleted-list"><li style="list-style-type:disc"><code><strong>createContext</strong></code>: Creates a Context object.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80e5-b730-ff6237a6af6b" class="bulleted-list"><li style="list-style-type:disc"><code><strong>Provider</strong></code>: Component supplying context <code>value</code> to descendants.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-802a-961a-fc5e56219b72" class="bulleted-list"><li style="list-style-type:disc"><code><strong>useContext</strong></code>: Hook to read current context value.</li></ul></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80f7-8672-e7893282a68f" class="">5.2. Creating an Auth Context</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80e6-baf0-fd9f70f3ce10" class="">This context manages the current user object and authentication state (login, logout).</p></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80ef-b6ca-f03411706b32" class="">Create <code>src/context/AuthContext.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8036-b744-cee0ab6e2e24" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/context/AuthContext.js
+import React, { createContext, useContext, useState, useEffect } from &#x27;react&#x27;;
+import AuthService from &#x27;../auth/authService&#x27;;
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) =&gt; {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    const checkUser = async () =&gt; {
+      try {
+        const currentUser = await AuthService.getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error(&#x27;Failed to fetch current user on mount:&#x27;, error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkUser();
+  }, []);
+
+  const login = async (session) =&gt; {
+    // After successful login from AuthService, fetch user details
+    const currentUser = await AuthService.getCurrentUser();
+    setUser(currentUser);
+  };
+
+  const logout = async () =&gt; {
+    try {
+      await AuthService.logout();
+      setUser(null);
+    } catch (error) {
+      console.error(&#x27;Logout failed:&#x27;, error);
+      throw error;
+    }
+  };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated: !!user }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};
+
+export const useAuth = () =&gt; {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error(&#x27;useAuth must be used within an AuthProvider&#x27;);
+  }
+  return context;
+};
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8042-9712-df0a83a1e1a3" class="">5.3. Creating a Watchlist Context</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8086-9d9f-c0798c33019a" class="">This context manages the user&#x27;s watchlist (add, remove, check items).</p></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-805c-b0e1-f429f6aa7a90" class="">Create <code>src/context/WatchlistContext.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80d8-bba9-d9338b6dedf6" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/context/WatchlistContext.js
+import React, { createContext, useContext, useState, useEffect, useCallback } from &#x27;react&#x27;;
+import WatchlistService from &#x27;../database/watchlistService&#x27;;
+import { useAuth } from &#x27;./AuthContext&#x27;; // To get the current user ID
+
+const WatchlistContext = createContext(null);
+
+export const WatchlistProvider = ({ children }) =&gt; {
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const [watchlist, setWatchlist] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchWatchlist = useCallback(async () =&gt; {
+    if (!isAuthenticated || !user?.$id) {
+      setWatchlist([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const items = await WatchlistService.getWatchlist(user.$id);
+      setWatchlist(items);
+    } catch (err) {
+      console.error(&#x27;Failed to fetch watchlist:&#x27;, err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [isAuthenticated, user?.$id]);
+
+  useEffect(() =&gt; {
+    if (!authLoading) { // Only fetch watchlist once auth state is resolved
+      fetchWatchlist();
+    }
+  }, [authLoading, fetchWatchlist]);
+
+  const addItemToWatchlist = async (itemData) =&gt; {
+    if (!isAuthenticated || !user?.$id) {
+      throw new Error(&#x27;User not authenticated.&#x27;);
+    }
+    setLoading(true); // Indicate action is in progress
+    try {
+      const newItem = await WatchlistService.addItemToWatchlist(user.$id, itemData);
+      setWatchlist((prev) =&gt; [newItem, ...prev]); // Add new item to the top
+      return newItem;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeItemFromWatchlist = async (itemId, mediaType) =&gt; {
+    if (!isAuthenticated || !user?.$id) {
+      throw new Error(&#x27;User not authenticated.&#x27;);
+    }
+    setLoading(true); // Indicate action is in progress
+    try {
+      const success = await WatchlistService.removeItemFromWatchlist(user.$id, itemId, mediaType);
+      if (success) {
+        setWatchlist((prev) =&gt; prev.filter((item) =&gt; !(item.itemId === itemId &amp;&amp; item.mediaType === mediaType)));
+      }
+      return success;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isItemInWatchlist = useCallback((itemId, mediaType) =&gt; {
+    return watchlist.some((item) =&gt; item.itemId === itemId &amp;&amp; item.mediaType === mediaType);
+  }, [watchlist]);
+
+  return (
+    &lt;WatchlistContext.Provider
+      value={{
+        watchlist,
+        loading,
+        error,
+        addItemToWatchlist,
+        removeItemFromWatchlist,
+        isItemInWatchlist,
+        refreshWatchlist: fetchWatchlist, // Allow components to manually refresh
+      }}
+    &gt;
+      {children}
+    &lt;/WatchlistContext.Provider&gt;
+  );
+};
+
+export const useWatchlist = () =&gt; {
+  const context = useContext(WatchlistContext);
+  if (!context) {
+    throw new Error(&#x27;useWatchlist must be used within a WatchlistProvider&#x27;);
+  }
+  return context;
+};
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8092-a817-ca0a3e32df75" class="">5.4. Combining Context Providers</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-805c-b00b-c2a25bf99cb7" class="">Wrap your app with <code>AuthProvider</code> and <code>WatchlistProvider</code>. <code>WatchlistProvider</code> nests inside <code>AuthProvider</code> due to its dependency.</p></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-806d-a7ed-dff5f1f78a00" class="">Modify your <code>App.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80f5-9de9-c4a56c523ff0" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// App.js
+import React from &#x27;react&#x27;;
+import AppNavigator from &#x27;./src/navigation/AppNavigator&#x27;; // Your main navigator
+import { AuthProvider } from &#x27;./src/context/AuthContext&#x27;;
+import { WatchlistProvider } from &#x27;./src/context/WatchlistContext&#x27;;
+import { StatusBar } from &#x27;react-native&#x27;;
+
+export default function App() {
+  return (
+    &lt;AuthProvider&gt;
+      &lt;WatchlistProvider&gt;
+        &lt;StatusBar barStyle=&quot;light-content&quot; /&gt;
+        &lt;AppNavigator /&gt;
+      &lt;/WatchlistProvider&gt;
+    &lt;/AuthProvider&gt;
+  );
+}
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-80be-a543-e06ed465a20d"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-8098-926e-ed62eef05a48" class="">6. Integrating into UI Components and Screens</h2></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8067-b79a-c346faeeeb4f" class="">Integrate functionality into your application&#x27;s UI.</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-806e-bbc3-c8a7273e41de" class="">6.1. Updating Navigation (Conditional Rendering based on Auth)</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80e4-aff7-d9d3811d6c43" class="">Show different screens (Auth vs. Main App) based on user login status.<br/>Modify <code>src/navigation/AppNavigator.js</code> (or root navigator):</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8077-a7b7-d3b0da89fbe3" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/navigation/AppNavigator.js (example)
+import React from &#x27;react&#x27;;
+import { NavigationContainer } from &#x27;@react-navigation/native&#x27;;
+import { createNativeStackNavigator } from &#x27;@react-navigation/native-stack&#x27;;
+import BottomTabNavigator from &#x27;./BottomTabNavigator&#x27;; // Your existing main tabs
+import { useAuth } from &#x27;../context/AuthContext&#x27;;
+import SignInScreen from &#x27;../screens/SignInScreen&#x27;; // Create this screen
+import SignUpScreen from &#x27;../screens/SignUpScreen&#x27;; // Create this screen
+import LoadingScreen from &#x27;../screens/LoadingScreen&#x27;; // A simple loading screen
+
+const Stack = createNativeStackNavigator();
+
+const AppNavigator = () =&gt; {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return &lt;LoadingScreen /&gt;; // Show a loading indicator while checking auth status
+  }
+
+  return (
+    &lt;NavigationContainer&gt;
+      &lt;Stack.Navigator screenOptions={{ headerShown: false }}&gt;
+        {isAuthenticated ? (
+          // User is authenticated, show main app
+          &lt;Stack.Screen name=&quot;Main&quot; component={BottomTabNavigator} /&gt;
+        ) : (
+          // User is not authenticated, show auth flow
+          &lt;&gt;
+            &lt;Stack.Screen name=&quot;SignIn&quot; component={SignInScreen} /&gt;
+            &lt;Stack.Screen name=&quot;SignUp&quot; component={SignUpScreen} /&gt;
+          &lt;/&gt;
+        )}
+      &lt;/Stack.Navigator&gt;
+    &lt;/NavigationContainer&gt;
+  );
+};
+
+export default AppNavigator;
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80b9-9b22-fdfeeb5ddd3a" class=""><code><strong>screens/LoadingScreen.js</strong></code><strong>:</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80ba-aec4-e15355052586" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// screens/LoadingScreen.js
+import React from &#x27;react&#x27;;
+import { View, ActivityIndicator, Text, StyleSheet } from &#x27;react-native&#x27;;
+
+const LoadingScreen = () =&gt; {
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;ActivityIndicator size=&quot;large&quot; color=&quot;#0000ff&quot; /&gt;
+      &lt;Text style={styles.text}&gt;Loading...&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: &#x27;center&#x27;,
+    alignItems: &#x27;center&#x27;,
+    backgroundColor: &#x27;#fff&#x27;,
+  },
+  text: {
+    marginTop: 10,
+    fontSize: 18,
+    color: &#x27;#333&#x27;,
+  },
+});
+
+export default LoadingScreen;
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-803a-8e62-f57406b15693" class="">Create <code>SignInScreen.js</code> and <code>SignUpScreen.js</code> (see section 3).</p></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-80b2-9779-f5d1ba1df3e3" class="">6.2. Creating a Profile Screen</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80d6-bb3d-f35680050eea" class="">This screen displays user info and offers a logout button.</p></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8026-9220-f7363740001e" class="">Create <code>src/screens/ProfileScreen.js</code>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80be-b9f3-fbb2281cde24" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/screens/ProfileScreen.js
+import React from &#x27;react&#x27;;
+import { View, Text, Button, StyleSheet, Alert } from &#x27;react-native&#x27;;
+import { useAuth } from &#x27;../context/AuthContext&#x27;;
+import { useNavigation } from &#x27;@react-navigation/native&#x27;;
+
+const ProfileScreen = () =&gt; {
+  const { user, logout } = useAuth();
+  const navigation = useNavigation();
+
+  const handleLogout = async () =&gt; {
+    try {
+      await logout();
+      Alert.alert(&#x27;Success&#x27;, &#x27;You have been logged out.&#x27;);
+      // Navigation will automatically update due to AuthContext change
+    } catch (error) {
+      Alert.alert(&#x27;Error&#x27;, error.message || &#x27;Logout failed.&#x27;);
+    }
+  };
+
+  if (!user) {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.title}&gt;Not Logged In&lt;/Text&gt;
+        &lt;Button title=&quot;Sign In&quot; onPress={() =&gt; navigation.navigate(&#x27;SignIn&#x27;)} /&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;Text style={styles.title}&gt;Profile&lt;/Text&gt;
+      &lt;Text style={styles.infoText}&gt;Name: {user.name || &#x27;N/A&#x27;}&lt;/Text&gt;
+      &lt;Text style={styles.infoText}&gt;Email: {user.email || &#x27;N/A&#x27;}&lt;/Text&gt;
+      &lt;Text style={styles.infoText}&gt;User ID: {user.$id || &#x27;N/A&#x27;}&lt;/Text&gt;
+      &lt;View style={styles.buttonContainer}&gt;
+        &lt;Button title=&quot;Logout&quot; onPress={handleLogout} color=&quot;red&quot; /&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: &#x27;center&#x27;,
+    alignItems: &#x27;center&#x27;,
+    padding: 20,
+    backgroundColor: &#x27;#f0f0f0&#x27;,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: &#x27;bold&#x27;,
+    marginBottom: 30,
+    color: &#x27;#333&#x27;,
+  },
+  infoText: {
+    fontSize: 18,
+    marginBottom: 10,
+    color: &#x27;#555&#x27;,
+    textAlign: &#x27;center&#x27;,
+  },
+  buttonContainer: {
+    marginTop: 30,
+    width: &#x27;80%&#x27;,
+  },
+});
+
+export default ProfileScreen;
+</code></pre></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80dd-af37-fe578004e311" class="">Add <code>ProfileScreen</code> to <code>BottomTabNavigator.js</code> or <code>StackNavigators.js</code>.</p></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80d2-93b3-ede4fe1598e0" class=""><strong>Example </strong><code><strong>BottomTabNavigator.js</strong></code><strong> modification:</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-80bc-92d2-d8bb673e4bb8" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/navigation/BottomTabNavigator.js (example)
+import React from &#x27;react&#x27;;
+import { createBottomTabNavigator } from &#x27;@react-navigation/bottom-tabs&#x27;;
+// Import your existing screens
+import HomeScreen from &#x27;../screens/HomeScreen&#x27;;
+import MoviesScreen from &#x27;../screens/MoviesScreen&#x27;;
+import TVShowsScreen from &#x27;../screens/TVShowsScreen&#x27;;
+import SearchScreen from &#x27;../screens/SearchScreen&#x27;;
+import WatchListScreen from &#x27;../screens/WatchListScreen&#x27;; // New screen for watchlist
+import ProfileScreen from &#x27;../screens/ProfileScreen&#x27;; // New Profile Screen
+import { Ionicons } from &#x27;@expo/vector-icons&#x27;; // Assuming you use Expo/Ionicons
+
+const Tab = createBottomTabNavigator();
+
+const BottomTabNavigator = () =&gt; {
+  return (
+    &lt;Tab.Navigator
+      screenOptions={({ route }) =&gt; ({
+        tabBarIcon: ({ focused, color, size }) =&gt; {
+          let iconName;
+          if (route.name === &#x27;Home&#x27;) {
+            iconName = focused ? &#x27;home&#x27; : &#x27;home-outline&#x27;;
+          } else if (route.name === &#x27;Movies&#x27;) {
+            iconName = focused ? &#x27;film&#x27; : &#x27;film-outline&#x27;;
+          } else if (route.name === &#x27;TV Shows&#x27;) {
+            iconName = focused ? &#x27;tv&#x27; : &#x27;tv-outline&#x27;;
+          } else if (route.name === &#x27;Search&#x27;) {
+            iconName = focused ? &#x27;search&#x27; : &#x27;search-outline&#x27;;
+          } else if (route.name === &#x27;Watchlist&#x27;) {
+            iconName = focused ? &#x27;bookmark&#x27; : &#x27;bookmark-outline&#x27;;
+          } else if (route.name === &#x27;Profile&#x27;) { // Add profile tab
+            iconName = focused ? &#x27;person&#x27; : &#x27;person-outline&#x27;;
+          }
+          return &lt;Ionicons name={iconName} size={size} color={color} /&gt;;
+        },
+        tabBarActiveTintColor: &#x27;tomato&#x27;,
+        tabBarInactiveTintColor: &#x27;gray&#x27;,
+        headerShown: false, // Hide header for tab screens
+      })}
+    &gt;
+      &lt;Tab.Screen name=&quot;Home&quot; component={HomeScreen} /&gt;
+      &lt;Tab.Screen name=&quot;Movies&quot; component={MoviesScreen} /&gt;
+      &lt;Tab.Screen name=&quot;TV Shows&quot; component={TVShowsScreen} /&gt;
+      &lt;Tab.Screen name=&quot;Search&quot; component={SearchScreen} /&gt;
+      &lt;Tab.Screen name=&quot;Watchlist&quot; component={WatchListScreen} /&gt;
+      &lt;Tab.Screen name=&quot;Profile&quot; component={ProfileScreen} /&gt; {/* Add Profile Screen */}
+    &lt;/Tab.Navigator&gt;
+  );
+};
+
+export default BottomTabNavigator;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8039-bb57-d2752847360f" class="">6.3. Integrating Watchlist Functionality into Movie Details</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8049-a540-ed58c7d75a90" class=""><code>MovieDetailsScreen.js</code> (or <code>ItemDetailsScreen</code>) needs a button to add/remove items from the watchlist.</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8009-8907-dd7d3a090246" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/screens/MovieDetailsScreen.js (example modification)
+import React, { useState, useEffect } from &#x27;react&#x27;;
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from &#x27;react-native&#x27;;
+import { useRoute } from &#x27;@react-navigation/native&#x27;;
+// Assume you have an API client to fetch movie/tv details (e.g., TMDB)
+import { fetchMovieDetails, fetchTvShowDetails } from &#x27;../api/apiClient&#x27;; // Assuming you have fetchTvShowDetails
+
+import { useAuth } from &#x27;../context/AuthContext&#x27;;
+import { useWatchlist } from &#x27;../context/WatchlistContext&#x27;;
+import { Ionicons } from &#x27;@expo/vector-icons&#x27;;
+
+const ItemDetailsScreen = () =&gt; { // Renamed for clarity, can remain MovieDetailsScreen
+  const route = useRoute();
+  const { itemId, mediaType, parentItemId, seasonNumber, episodeNumber } = route.params; // Get item ID and type from navigation params
+
+  const { isAuthenticated } = useAuth();
+  const {
+    watchlist,
+    addItemToWatchlist,
+    removeItemFromWatchlist,
+    isItemInWatchlist,
+    loading: watchlistLoading,
+  } = useWatchlist();
+
+  const [itemDetails, setItemDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isAddingRemoving, setIsAddingRemoving] = useState(false);
+
+  const isInWatchlist = isItemInWatchlist(String(itemId), mediaType); // Convert itemId to string for consistency with Appwrite
+
+  useEffect(() =&gt; {
+    const getDetails = async () =&gt; {
+      setLoading(true);
+      try {
+        let details;
+        if (mediaType === &#x27;movie&#x27;) {
+          details = await fetchMovieDetails(itemId);
+        } else if (mediaType === &#x27;tv&#x27;) {
+          details = await fetchTvShowDetails(itemId);
+        }
+        // Add logic for &#x27;season&#x27; and &#x27;episode&#x27; if you want details for them
+        setItemDetails(details);
+      } catch (error) {
+        console.error(&#x27;Error fetching item details:&#x27;, error);
+        Alert.alert(&#x27;Error&#x27;, &#x27;Failed to fetch item details.&#x27;);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getDetails();
+  }, [itemId, mediaType]);
+
+  const handleWatchlistToggle = async () =&gt; {
+    if (!isAuthenticated) {
+      Alert.alert(&#x27;Login Required&#x27;, &#x27;Please log in to manage your watchlist.&#x27;);
+      return;
+    }
+
+    setIsAddingRemoving(true);
+    try {
+      if (isInWatchlist) {
+        await removeItemFromWatchlist(String(itemId), mediaType);
+        Alert.alert(&#x27;Removed&#x27;, `${itemDetails?.title || itemDetails?.name} removed from watchlist.`);
+      } else {
+        const itemData = {
+          itemId: String(itemId),
+          itemTitle: itemDetails?.title || itemDetails?.name || `Season ${seasonNumber} Episode ${episodeNumber}`, // Adjust based on mediaType
+          itemPosterPath: itemDetails?.poster_path || itemDetails?.still_path,
+          itemReleaseDate: itemDetails?.release_date || itemDetails?.first_air_date || itemDetails?.air_date,
+          mediaType: mediaType,
+          parentItemId: parentItemId, // Will be undefined for movies/tv, set for seasons/episodes
+          seasonNumber: seasonNumber,
+          episodeNumber: episodeNumber,
+        };
+        await addItemToWatchlist(itemData);
+        Alert.alert(&#x27;Added&#x27;, `${itemDetails?.title || itemDetails?.name || `Season ${seasonNumber} Episode ${episodeNumber}`} added to watchlist!`);
+      }
+    } catch (error) {
+      Alert.alert(&#x27;Error&#x27;, error.message || &#x27;Could not update watchlist.&#x27;);
+      console.error(&#x27;Watchlist update error:&#x27;, error);
+    } finally {
+      setIsAddingRemoving(false);
+    }
+  };
+
+  if (loading || (!itemDetails &amp;&amp; !error)) {
+    return (
+      &lt;View style={styles.loadingContainer}&gt;
+        &lt;ActivityIndicator size=&quot;large&quot; color=&quot;#0000ff&quot; /&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  return (
+    &lt;ScrollView style={styles.container}&gt;
+      {(itemDetails.poster_path || itemDetails.still_path) &amp;&amp; (
+        &lt;Image
+          source={{ uri: `https://image.tmdb.org/t/p/w500${itemDetails.poster_path || itemDetails.still_path}` }}
+          style={styles.poster}
+        /&gt;
+      )}
+      &lt;View style={styles.detailsContainer}&gt;
+        &lt;Text style={styles.title}&gt;{itemDetails.title || itemDetails.name}&lt;/Text&gt;
+        &lt;Text style={styles.overview}&gt;{itemDetails.overview || itemDetails.description}&lt;/Text&gt;
+        &lt;Text style={styles.info}&gt;
+          Release Date: {itemDetails.release_date || itemDetails.first_air_date || itemDetails.air_date}
+        &lt;/Text&gt;
+        {itemDetails.vote_average &amp;&amp; &lt;Text style={styles.info}&gt;Rating: {itemDetails.vote_average?.toFixed(1)} / 10&lt;/Text&gt;}
+        {mediaType === &#x27;season&#x27; &amp;&amp; seasonNumber &amp;&amp; &lt;Text style={styles.info}&gt;Season: {seasonNumber}&lt;/Text&gt;}
+        {mediaType === &#x27;episode&#x27; &amp;&amp; episodeNumber &amp;&amp; &lt;Text style={styles.info}&gt;Episode: {episodeNumber}&lt;/Text&gt;}
+
+
+        {/* Watchlist Button */}
+        &lt;TouchableOpacity
+          style={[styles.watchlistButton, isInWatchlist ? styles.watchlistButtonActive : {}]}
+          onPress={handleWatchlistToggle}
+          disabled={isAddingRemoving || watchlistLoading}
+        &gt;
+          {isAddingRemoving || watchlistLoading ? (
+            &lt;ActivityIndicator color=&quot;#fff&quot; /&gt;
+          ) : (
+            &lt;&gt;
+              &lt;Ionicons
+                name={isInWatchlist ? &#x27;bookmark&#x27; : &#x27;bookmark-outline&#x27;}
+                size={24}
+                color=&quot;#fff&quot;
+              /&gt;
+              &lt;Text style={styles.watchlistButtonText}&gt;
+                {isInWatchlist ? &#x27;Remove from Watchlist&#x27; : &#x27;Add to Watchlist&#x27;}
+              &lt;/Text&gt;
+            &lt;/&gt;
+          )}
+        &lt;/TouchableOpacity&gt;
+
+        {/* ... other details like genres, cast, etc. */}
+      &lt;/View&gt;
+    &lt;/ScrollView&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: &#x27;#000&#x27;,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: &#x27;center&#x27;,
+    alignItems: &#x27;center&#x27;,
+    backgroundColor: &#x27;#000&#x27;,
+  },
+  poster: {
+    width: &#x27;100%&#x27;,
+    height: 500,
+    resizeMode: &#x27;cover&#x27;,
+  },
+  detailsContainer: {
+    padding: 15,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: &#x27;bold&#x27;,
+    color: &#x27;#fff&#x27;,
+    marginBottom: 10,
+  },
+  overview: {
+    fontSize: 16,
+    color: &#x27;#ccc&#x27;,
+    marginBottom: 15,
+    lineHeight: 24,
+  },
+  info: {
+    fontSize: 14,
+    color: &#x27;#aaa&#x27;,
+    marginBottom: 5,
+  },
+  watchlistButton: {
+    flexDirection: &#x27;row&#x27;,
+    alignItems: &#x27;center&#x27;,
+    justifyContent: &#x27;center&#x27;,
+    backgroundColor: &#x27;#4CAF50&#x27;,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  watchlistButtonActive: {
+    backgroundColor: &#x27;#FF6347&#x27;, // Red for remove
+  },
+  watchlistButtonText: {
+    color: &#x27;#fff&#x27;,
+    fontSize: 18,
+    fontWeight: &#x27;bold&#x27;,
+    marginLeft: 10,
+  },
+});
+
+export default ItemDetailsScreen;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-8073-867c-f83a82fcae51" class="">6.4. Integrating Watchlist into MoviesScreen (and TVShowsScreen)</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-8002-ac6a-eb31b76f71d1" class="">Consider a watchlist indicator (e.g., bookmark icon) on media cards.</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8083-a63f-ef83c9df4f05" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/components/MovieCard.js (example modification)
+import React from &#x27;react&#x27;;
+import { View, Text, Image, StyleSheet, TouchableOpacity } from &#x27;react-native&#x27;;
+import { useNavigation } from &#x27;@react-navigation/native&#x27;;
+import { useWatchlist } from &#x27;../context/WatchlistContext&#x27;;
+import { Ionicons } from &#x27;@expo/vector-icons&#x27;;
+
+const MediaCard = ({ item, mediaType }) =&gt; { // Renamed from MovieCard to MediaCard
+  const navigation = useNavigation();
+  const { isItemInWatchlist } = useWatchlist(); // Changed from isMovieInWatchlist
+
+  const handlePress = () =&gt; {
+    navigation.navigate(&#x27;ItemDetails&#x27;, { itemId: item.id, mediaType }); // Changed to ItemDetails
+  };
+
+  const isInWatchlist = isItemInWatchlist(String(item.id), mediaType); // Pass mediaType
+
+  return (
+    &lt;TouchableOpacity onPress={handlePress} style={styles.card}&gt;
+      {item.poster_path ? (
+        &lt;Image
+          source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
+          style={styles.poster}
+        /&gt;
+      ) : (
+        &lt;View style={styles.placeholder}&gt;
+          &lt;Text style={styles.placeholderText}&gt;No Image&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+      &lt;View style={styles.infoContainer}&gt;
+        &lt;Text style={styles.title} numberOfLines={2}&gt;
+          {item.title || item.name}
+        &lt;/Text&gt;
+        {isInWatchlist &amp;&amp; (
+          &lt;View style={styles.watchlistIndicator}&gt;
+            &lt;Ionicons name=&quot;bookmark&quot; size={18} color=&quot;gold&quot; /&gt;
+          &lt;/View&gt;
+        )}
+      &lt;/View&gt;
+    &lt;/TouchableOpacity&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    width: 150,
+    marginRight: 15,
+    borderRadius: 8,
+    overflow: &#x27;hidden&#x27;,
+    backgroundColor: &#x27;#1a1a1a&#x27;,
+    marginBottom: 15,
+  },
+  poster: {
+    width: &#x27;100%&#x27;,
+    height: 200,
+    resizeMode: &#x27;cover&#x27;,
+  },
+  placeholder: {
+    width: &#x27;100%&#x27;,
+    height: 200,
+    backgroundColor: &#x27;#333&#x27;,
+    justifyContent: &#x27;center&#x27;,
+    alignItems: &#x27;center&#x27;,
+  },
+  placeholderText: {
+    color: &#x27;#888&#x27;,
+    fontSize: 16,
+  },
+  infoContainer: {
+    padding: 8,
+    position: &#x27;relative&#x27;, // For indicator positioning
+  },
+  title: {
+    color: &#x27;#fff&#x27;,
+    fontSize: 14,
+    fontWeight: &#x27;bold&#x27;,
+    minHeight: 40, // Ensure consistent height
+  },
+  watchlistIndicator: {
+    position: &#x27;absolute&#x27;,
+    top: 5,
+    right: 5,
+    backgroundColor: &#x27;rgba(0,0,0,0.5)&#x27;,
+    borderRadius: 5,
+    padding: 3,
+  },
+});
+
+export default MediaCard;
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2e6e8f84-15bc-805d-be8b-f63e7dd11a67" class="">6.5. Displaying Watchlist on WatchListScreen</h3></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-80bc-b170-d950f46049ab" class="">Create <code>src/screens/WatchListScreen.js</code> to fetch and display the user&#x27;s watchlist.</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2e6e8f84-15bc-8014-8dff-f3a22129ee71" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">// src/screens/WatchListScreen.js
+import React, { useEffect, useState, useCallback } from &#x27;react&#x27;;
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity, Alert } from &#x27;react-native&#x27;;
+import { useAuth } from &#x27;../context/AuthContext&#x27;;
+import { useWatchlist } from &#x27;../context/WatchlistContext&#x27;;
+import { useNavigation } from &#x27;@react-navigation/native&#x27;;
+import { Ionicons } from &#x27;@expo/vector-icons&#x27;;
+
+const WatchListScreen = () =&gt; {
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { watchlist, loading: watchlistLoading, error, removeItemFromWatchlist, refreshWatchlist } = useWatchlist();
+  const navigation = useNavigation();
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  useEffect(() =&gt; {
+    // Optionally refresh watchlist when the screen focuses
+    const unsubscribe = navigation.addListener(&#x27;focus&#x27;, () =&gt; {
+      if (isAuthenticated) {
+        refreshWatchlist();
+      }
+    });
+    return unsubscribe;
+  }, [navigation, isAuthenticated, refreshWatchlist]);
+
+  const handleRemove = async (itemId, mediaType, itemTitle) =&gt; {
+    Alert.alert(
+      &#x27;Remove from Watchlist&#x27;,
+      `Are you sure you want to remove &quot;${itemTitle}&quot; from your watchlist?`,
+      [
+        { text: &#x27;Cancel&#x27;, style: &#x27;cancel&#x27; },
+        {
+          text: &#x27;Remove&#x27;,
+          onPress: async () =&gt; {
+            setIsRemoving(true);
+            try {
+              await removeItemFromWatchlist(itemId, mediaType);
+              Alert.alert(&#x27;Removed&#x27;, `${itemTitle} has been removed.`);
+            } catch (err) {
+              Alert.alert(&#x27;Error&#x27;, err.message || &#x27;Failed to remove from watchlist.&#x27;);
+            } finally {
+              setIsRemoving(false);
+            }
+          },
+          style: &#x27;destructive&#x27;,
+        },
+      ]
+    );
+  };
+
+  const renderWatchlistItem = ({ item }) =&gt; (
+    &lt;TouchableOpacity
+      style={styles.watchlistItem}
+      onPress={() =&gt; navigation.navigate(&#x27;ItemDetails&#x27;, { itemId: item.itemId, mediaType: item.mediaType })}
+    &gt;
+      {item.itemPosterPath ? (
+        &lt;Image
+          source={{ uri: `https://image.tmdb.org/t/p/w200${item.itemPosterPath}` }}
+          style={styles.itemPoster}
+        /&gt;
+      ) : (
+        &lt;View style={styles.itemPlaceholder}&gt;
+          &lt;Text style={styles.itemPlaceholderText}&gt;No Image&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+      &lt;View style={styles.itemDetails}&gt;
+        &lt;Text style={styles.itemTitle}&gt;{item.itemTitle}&lt;/Text&gt;
+        {item.itemReleaseDate &amp;&amp; &lt;Text style={styles.itemInfo}&gt;Release: {item.itemReleaseDate}&lt;/Text&gt;}
+        {item.mediaType &amp;&amp; &lt;Text style={styles.itemInfo}&gt;Type: {item.mediaType}&lt;/Text&gt;}
+        {item.seasonNumber &amp;&amp; &lt;Text style={styles.itemInfo}&gt;Season: {item.seasonNumber}&lt;/Text&gt;}
+        {item.episodeNumber &amp;&amp; &lt;Text style={styles.itemInfo}&gt;Episode: {item.episodeNumber}&lt;/Text&gt;}
+      &lt;/View&gt;
+      &lt;TouchableOpacity
+        style={styles.removeButton}
+        onPress={() =&gt; handleRemove(item.itemId, item.mediaType, item.itemTitle)}
+        disabled={isRemoving}
+      &gt;
+        {isRemoving ? (
+          &lt;ActivityIndicator color=&quot;#fff&quot; size=&quot;small&quot; /&gt;
+        ) : (
+          &lt;Ionicons name=&quot;close-circle&quot; size={24} color=&quot;red&quot; /&gt;
+        )}
+      &lt;/TouchableOpacity&gt;
+    &lt;/TouchableOpacity&gt;
+  );
+
+  if (authLoading || watchlistLoading) {
+    return (
+      &lt;View style={styles.loadingContainer}&gt;
+        &lt;ActivityIndicator size=&quot;large&quot; color=&quot;#0000ff&quot; /&gt;
+        &lt;Text style={styles.loadingText}&gt;Loading Watchlist...&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.messageText}&gt;Please log in to view your watchlist.&lt;/Text&gt;
+        &lt;TouchableOpacity style={styles.loginButton} onPress={() =&gt; navigation.navigate(&#x27;SignIn&#x27;)}&gt;
+          &lt;Text style={styles.loginButtonText}&gt;Go to Login&lt;/Text&gt;
+        &lt;/TouchableOpacity&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  if (error) {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.messageText}&gt;Error fetching watchlist: {error.message}&lt;/Text&gt;
+        &lt;TouchableOpacity style={styles.refreshButton} onPress={refreshWatchlist}&gt;
+          &lt;Text style={styles.refreshButtonText}&gt;Try Again&lt;/Text&gt;
+        &lt;/TouchableOpacity&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  if (watchlist.length === 0) {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.messageText}&gt;Your watchlist is empty.&lt;/Text&gt;
+        &lt;Text style={styles.subMessageText}&gt;Add movies, TV shows, seasons, or episodes from their details pages!&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;Text style={styles.screenTitle}&gt;My Watchlist&lt;/Text&gt;
+      &lt;FlatList
+        data={watchlist}
+        keyExtractor={(item) =&gt; item.$id}
+        renderItem={renderWatchlistItem}
+        contentContainerStyle={styles.listContentContainer}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: &#x27;#000&#x27;,
+    alignItems: &#x27;center&#x27;,
+    justifyContent: &#x27;center&#x27;,
+    padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: &#x27;center&#x27;,
+    alignItems: &#x27;center&#x27;,
+    backgroundColor: &#x27;#000&#x27;,
+  },
+  loadingText: {
+    color: &#x27;#fff&#x27;,
+    marginTop: 10,
+    fontSize: 16,
+  },
+  messageText: {
+    color: &#x27;#fff&#x27;,
+    fontSize: 18,
+    textAlign: &#x27;center&#x27;,
+    marginBottom: 10,
+  },
+  subMessageText: {
+    color: &#x27;#ccc&#x27;,
+    fontSize: 14,
+    textAlign: &#x27;center&#x27;,
+  },
+  loginButton: {
+    backgroundColor: &#x27;#007bff&#x27;,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  loginButtonText: {
+    color: &#x27;#fff&#x27;,
+    fontSize: 16,
+    fontWeight: &#x27;bold&#x27;,
+  },
+  refreshButton: {
+    backgroundColor: &#x27;#28a745&#x27;,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  refreshButtonText: {
+    color: &#x27;#fff&#x27;,
+    fontSize: 16,
+    fontWeight: &#x27;bold&#x27;,
+  },
+  screenTitle: {
+    fontSize: 28,
+    fontWeight: &#x27;bold&#x27;,
+    color: &#x27;#fff&#x27;,
+    marginBottom: 20,
+    marginTop: 50, // Adjust for header
+  },
+  listContentContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+  },
+  watchlistItem: {
+    flexDirection: &#x27;row&#x27;,
+    backgroundColor: &#x27;#1a1a1a&#x27;,
+    borderRadius: 8,
+    marginBottom: 15,
+    overflow: &#x27;hidden&#x27;,
+    alignItems: &#x27;center&#x27;,
+    width: &#x27;100%&#x27;,
+  },
+  itemPoster: {
+    width: 80,
+    height: 120,
+    resizeMode: &#x27;cover&#x27;,
+  },
+  itemPlaceholder: {
+    width: 80,
+    height: 120,
+    backgroundColor: &#x27;#333&#x27;,
+    justifyContent: &#x27;center&#x27;,
+    alignItems: &#x27;center&#x27;,
+  },
+  itemPlaceholderText: {
+    color: &#x27;#888&#x27;,
+    fontSize: 12,
+    textAlign: &#x27;center&#x27;,
+  },
+  itemDetails: {
+    flex: 1,
+    padding: 10,
+  },
+  itemTitle: {
+    color: &#x27;#fff&#x27;,
+    fontSize: 16,
+    fontWeight: &#x27;bold&#x27;,
+    marginBottom: 5,
+  },
+  itemInfo: {
+    color: &#x27;#ccc&#x27;,
+    fontSize: 12,
+  },
+  removeButton: {
+    padding: 10,
+  },
+});
+
+export default WatchListScreen;
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2e6e8f84-15bc-800e-8d5d-e26b4bd2804e"/></div><div style="display:contents" dir="auto"><h2 id="2e6e8f84-15bc-807d-bacd-c68b826a7609" class="">7. Final Thoughts and Best Practices</h2></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8050-a8b7-c3971aad20ae" class="bulleted-list"><li style="list-style-type:disc"><strong>Error Handling:</strong> Implement robust error handling with user-friendly messages.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8038-8681-d839ec09fa9b" class="bulleted-list"><li style="list-style-type:disc"><strong>Loading States:</strong> Use loading indicators for better UX.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8034-9934-d956672a15a2" class="bulleted-list"><li style="list-style-type:disc"><strong>Security:</strong><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8060-b8d2-df82c9a25d60" class="bulleted-list"><li style="list-style-type:circle"><strong>Environment Variables:</strong> Use environment variables for sensitive data (e.g., Appwrite Project ID, Endpoint).</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8087-b503-de94d8da87c9" class="bulleted-list"><li style="list-style-type:circle"><strong>Appwrite Permissions:</strong> Verify Appwrite collection and document permissions; document-level permissions in <code>watchlistService.js</code> are crucial.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80d6-b2c8-c1d5374e91c6" class="bulleted-list"><li style="list-style-type:disc"><strong>Offline Support:</strong> Consider local caching (e.g., <code>AsyncStorage</code>) for offline watchlist access.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80db-9d6f-e07d868f94c2" class="bulleted-list"><li style="list-style-type:disc"><strong>Real-time Updates:</strong> Explore Appwrite&#x27;s real-time capabilities for watchlist updates.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-8024-a093-ef03eab940c6" class="bulleted-list"><li style="list-style-type:disc"><strong>Scalability:</strong> Use Appwrite functions/webhooks for server-side logic as the app grows.</li></ul></div><div style="display:contents" dir="auto"><ul id="2e6e8f84-15bc-80b7-a4a7-f7a4c5809c42" class="bulleted-list"><li style="list-style-type:disc"><strong>UI/UX:</strong> Focus on smooth UX and immediate feedback.</li></ul></div><div style="display:contents" dir="auto"><p id="2e6e8f84-15bc-802f-95c4-f72989eb2fe3" class="">This guide provides a foundation for Appwrite auth, database (watchlist), and React Context API in your movie listing app. Adapt examples to your UI/structure.</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
