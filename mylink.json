@@ -1,4 +1,11 @@
 {
-  "domain": "https://player.autoembed.app/embed/",
-  "server": "2"
+  "servers": [
+    {
+      "domain": "https://player.autoembed.app/embed/",
+      "server": "2"
+    },
+    {
+      "domain": "https://vidsrc-embed.ru/embed/"
+    }
+  ]
 }
